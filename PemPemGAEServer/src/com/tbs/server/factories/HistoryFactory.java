@@ -1,5 +1,7 @@
 package com.tbs.server.factories;
 
+import com.tbs.server.model.User;
+
 
 
 
@@ -13,6 +15,16 @@ public class HistoryFactory extends EntityFactory {
 		}
 
 		return instance;
+	}
+	
+	public boolean insertOrUpdateHistory() {
+		return false;
+	}
+	public User getHistory() {
+		return null;
+	}
+	public boolean deleteHistory() {
+		return false;
 	}
 }
 

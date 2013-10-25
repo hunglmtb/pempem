@@ -1,5 +1,7 @@
 package com.tbs.server.factories;
 
+import com.tbs.server.model.User;
+
 
 
 public class MediaFactory extends EntityFactory {
@@ -12,6 +14,16 @@ public class MediaFactory extends EntityFactory {
 		}
 
 		return instance;
+	}
+	
+	public boolean insertOrUpdateMedia() {
+		return false;
+	}
+	public User getMedia() {
+		return null;
+	}
+	public boolean deleteMedia() {
+		return false;
 	}
 }
 

@@ -1,0 +1,139 @@
+/* -------------------- Basic HTML tags -------------------- */
+
+body {
+	font: 12px/1.5 "Lucida Sans Unicode", "Lucida Grande", sans-serif;
+	color: #444444;
+	background-color: #f6f6f6;
+}
+
+div.module div.module-table-body {
+	float:left;
+	width: 100%;
+	margin-left: 20%;
+	margin-top: 5%;
+}
+
+div.module table {
+	float:left;
+	width: 100%;
+	border-left: 0px;
+	border-bottom: 0px;
+}
+
+div.module table.module-table-body tr.new {
+	background-color: #40E0D0;
+	border-collapse: separate;
+	border-right: 1px solid #aaaaaa;
+	border-left: 1px solid #aaaaaa;
+}
+
+div.module table.module-table-body tr.odd{
+	background-color:#AFEEEE;
+	border-collapse: separate;
+	border-right: 1px solid #aaaaaa;
+	border-left: 1px solid #aaaaaa;
+}
+div.module table.module-table-body  td.bntdelete{
+	background-color:#f6f6f6;
+	border-right: 0px;
+	border-left: 0px;
+	font-size: 16px;
+}
+
+div.module table th {
+	background-color:#20B2AA;
+	padding: 5px;
+	border-right: 1px solid #d9d9d9;
+	border-bottom: 1px solid #d9d9d9;
+}
+
+div.module table td {
+	padding: 5px;
+	border-right: 1px solid #d9d9d9;
+}
+div.module table.module-table-body input.buttonedit{
+	background-color:#FFC0CB;
+	width: 70px;
+	height: 30px;
+	font-size: 16px;
+}
+
+button.buttoninsert{
+	background-color:#FFC0CB;
+	margin-right:70%;
+	width: 70px;
+	height: 30px;
+	font-size: 16px;
+}
+button.buttonback{
+	background-color:#FFC0CB;
+	width: 150px;
+	height: 30px;
+	font-size: 16px;
+}
+
+/*---------------table 2---------------*/
+div.module div.module-table-body2 {
+	float:left;
+	width: 100%;
+	margin-top: 5%;
+}
+div.module table.module-table-body2 tr.trtable2listitem{
+	background-color:#DDA0DD;
+	border-collapse: separate;
+	border-right: 1px solid #aaaaaa;
+	border-left: 1px solid #aaaaaa;
+}
+div.module table.module-table-body2 th.trtable2 {
+	background-color:#9370D8;
+	padding: 5px;
+	border-right: 1px solid #d9d9d9;
+	border-bottom: 1px solid #d9d9d9;
+}
+div.module table.module-table-body2  input.buttonserch{
+	background-color:#EE82EE;
+	width: 70px;
+	height: 30px;
+	font-size: 16px;
+}
+div.module table.module-table-body2  td.bntdelete{
+	background-color:#f6f6f6;
+	border-right: 0px;
+	font-size: 16px;
+}
+
+/*---------------end table 2---------------*/
+/*---------------paging-----------------*/
+.pagination {
+	float:right;
+	font-size: 12px;
+	margin-right:43%;
+}
+.pagination a {
+	text-decoration: none;
+	border: solid 1px #AAE;
+	font-size: 12px;
+}
+.pagination .current {
+    background: #26B;
+    background-color:#40E0D0;
+	border: solid 1px #AAE;
+}
+/*---------------end paging---------------*/
+/*---------------paging serial-----------------*/
+.paginationseriah {
+	float:right;
+	font-size: 12px;
+	margin-right:57%;
+}
+.paginationseriah a {
+	text-decoration: none;
+	border: solid 1px #AAE;
+	font-size: 12px;
+}
+.paginationseriah .current {
+    background: #26B;
+    background-color:#40E0D0;
+	border: solid 1px #AAE;
+}
+/*---------------end paging---------------*/

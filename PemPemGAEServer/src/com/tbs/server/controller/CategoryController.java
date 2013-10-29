@@ -1,56 +1,30 @@
 package com.tbs.server.controller;
 
-import static com.tbs.server.util.Common.CATEGORY_ID_EXIT;
-import static com.tbs.server.util.Common.CATEGORY_ID_HEADER;
-import static com.tbs.server.util.Common.CATEGORY_ID_HISTORY;
-import static com.tbs.server.util.Common.CATEGORY_ID_NAME_01;
-import static com.tbs.server.util.Common.CATEGORY_ID_NAME_02;
-import static com.tbs.server.util.Common.CATEGORY_ID_NAME_03;
-import static com.tbs.server.util.Common.CATEGORY_ID_NAME_04;
-import static com.tbs.server.util.Common.CATEGORY_ID_NAME_05;
-import static com.tbs.server.util.Common.CATEGORY_ID_NAME_06;
-import static com.tbs.server.util.Common.CATEGORY_ID_NEWSFEED;
-import static com.tbs.server.util.Common.CATEGORY_ID_SEARCH;
-import static com.tbs.server.util.Common.CATEGORY_ID_SETTING;
-import static com.tbs.server.util.Common.CATEGORY_ID_TIMER;
-
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Logger;
 
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.ModelMap;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import com.tbs.server.responder.CategoryRow;
-import com.tbs.server.responder.MediaInfo;
+import com.tbs.server.factories.CategoryFactory;
+import com.tbs.server.model.Category;
+import com.tbs.server.responder.RepondCategory;
+import com.tbs.server.responder.RespondNotification;
+import com.tbs.server.util.Util;
 
 
 @Controller
-@RequestMapping("/categories")
+@RequestMapping("/category")
 public class CategoryController {
-
-	
-//    private @Autowired ServletContext servletContext;
-
-	@RequestMapping(value="/{name}", method = RequestMethod.GET)
-	public String getMovie(@PathVariable String name, ModelMap model) {
-
-		model.addAttribute("movie", name);
-		model.addAttribute("message", "koko");
-
-		//retrun to jsp page, configurated in mvc-dispatcher-servlet.xml, view resolver
-		return "list";
-
-	}
+	private static final Logger _logger = Logger.getLogger(CategoryController.class.getName());
 
 	@RequestMapping("/get")
 	@ResponseBody
-	public List<CategoryRow> getCategories() {
-		List<CategoryRow> categories = new ArrayList<CategoryRow>();
+	public List<RepondCategory> getCategories() {
+		/*List<CategoryRow> categories = new ArrayList<CategoryRow>();
 		categories.add(new CategoryRow(CATEGORY_ID_HEADER, "YOU",false, null));
 		categories.add(new CategoryRow(CATEGORY_ID_HISTORY, "History", false, null));
 		categories.add(new CategoryRow(CATEGORY_ID_SEARCH, "Search", false, null));
@@ -65,46 +39,51 @@ public class CategoryController {
 		categories.add(new CategoryRow(CATEGORY_ID_NAME_04, "Quick & Snow Show", false, null));
 		categories.add(new CategoryRow(CATEGORY_ID_NAME_05, "Truyện ngắn kinh dị",  false, null));
 		categories.add(new CategoryRow(CATEGORY_ID_NAME_06, "Thơ quán",  false, null));
-		
-		return categories  ;
+		*/
+		List<Category> categories = CategoryFactory.getInstance().getCategory();
+		List<RepondCategory> rcs = new ArrayList<RepondCategory>();
+		for (Category category : categories) {
+			rcs.add(new RepondCategory(category));
+		}
+		return rcs ;
 	}
 	
-	
-	@RequestMapping(value="/medialist", params={"groupmode","offset","limit"})
-
+	@RequestMapping(value="/add", params={"categoryid","categoryname"})
 	@ResponseBody
-	public List<MediaInfo> getMediaList(@RequestParam("groupmode") String groupmode,
-			@RequestParam("offset") int offset,
-			@RequestParam("limit") String limit) {
-		/*if (Common.mediaId==null) {
-			Common.initTestData(servletContext);
+	public List<RepondCategory> addCategory(
+			@RequestParam("categoryid") String categoryId,
+			@RequestParam("categoryname") String categoryName) {
+		
+		Category category;
+		List<RepondCategory> rcs =null;
+		try {
+			category = CategoryFactory.getInstance().insertOrUpdateCategory(categoryId,categoryName);
+			if (category!=null) {
+				rcs = getCategories();				
+			}
+			
+		} catch (Exception e) {
+			_logger.warning(e.getMessage());
+			e.printStackTrace();
 		}
-		List<MediaInfo> mediaList = new ArrayList<MediaInfo>();
-		//init media
-		MediaInfo media = null;
-		for (int i = 0; i <= 10; i++) {
-			media = new MediaInfo("mediaid"+i,
-					"title"+i,
-					Common.mediaFileUrl.get(i),
-					groupmode,
-					""+100+i,
-					""+50+i,
-					"speaker"+i,
-					"contentinfo"+i,
-					"34:"+i,
-					Common.mediaLinkUrl.get(i),
-					"author"+i,
-					"2013/5/"+i,
-					""+200+i,
-					0,
-					Common.mediaImageThumbUrl.get(i),
-					Common.mediaImageUrl.get(i),
-					i*10/100+" %",
-					Common.mediaHistoryTime[i]);
-			mediaList.add(media);
-		}
-		 */
-		return null;
+		return rcs;
 	}
-
+	
+	@RequestMapping(value="/delete", params={"categorykeystring"})
+	@ResponseBody
+	public List<RepondCategory> deleteCategory(@RequestParam("categorykeystring") String categoryKeyString) {
+		
+//		RespondNotification repondNotification = null;
+		List<RepondCategory> rcs = null;
+		
+		try {
+			CategoryFactory.getInstance().deleteCategory(categoryKeyString);
+//			repondNotification = new RespondNotification(Util.SUCCESS, Util.DELETE_SUCCESS);
+			rcs = getCategories();				
+		} catch (Exception e) {
+			_logger.warning(e.getMessage());
+//			repondNotification = new RespondNotification(Util.ERROR, Util.DELETE_ERROR);
+		}
+		return rcs;
+	}
 }

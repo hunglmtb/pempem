@@ -1,0 +1,90 @@
+body {
+	font: 12px/1.5 "Lucida Sans Unicode", "Lucida Grande", sans-serif;
+	color: #444444;
+	background-color: #f6f6f6;
+}
+
+table.module-table-body2 {
+	float:left;
+	width: 100%;
+	margin-left: 20%;
+	margin-top: 15%;
+}
+button.buttoninsert{
+	background-color:#FFC0CB;
+	width: 70px;
+	height: 30px;
+	font-size: 16px;
+}
+button.buttonback{
+	background-color:#FFC0CB;
+	width: 150px;
+	height: 30px;
+	font-size: 16px;
+}
+div.module-table-body2 {
+	float:left;
+	width: 100%;
+}
+table.module-table-body2 tr.trtable2listitem{
+	background-color:#40E0D0;
+	border-collapse: separate;
+	border-right: 1px solid #aaaaaa;
+	border-left: 1px solid #aaaaaa;
+}
+table.module-table-body2 th.trtable2 {
+	background-color:#20B2AA;
+	padding: 5px;
+	border-right: 1px solid #d9d9d9;
+	border-bottom: 1px solid #d9d9d9;
+}
+table.module-table-body2  input.buttonserch{
+	background-color:#AFEEEE;
+	width: 70px;
+	height: 30px;
+	font-size: 16px;
+}
+table.module-table-body2  input.buttondelete{
+	background-color:#FFC0CB;
+	width: 70px;
+	height: 30px;
+	font-size: 16px;
+}
+table.module-table-body2 td.bntdelete{
+	background-color:#f6f6f6;
+	border-right: 0px;
+	font-size: 16px;
+}
+input.bntinsertcsv{
+	display: none;
+	background-color:#FFC0CB;
+	width: 180px;
+	height: 30px;
+	font-size: 22px;
+}
+input.myfileupload-buttonbar{
+	background-color:#FFC0CB;
+}
+
+.myui-button {
+	width: 240px;
+	height: 30px;
+	float: right;
+	margin-right: 22%;
+	margin-top: 2%;
+	position: relative;
+	cursor: pointer;
+	text-align: center;
+	overflow: hidden;
+}
+.myui-button1 {
+	width: 240px;
+	height: 30px;
+	float: right;
+	margin-top: 2%;
+	margin-right: 35%;
+	position: relative;
+	cursor: pointer;
+	text-align: center;
+	overflow: hidden;
+}

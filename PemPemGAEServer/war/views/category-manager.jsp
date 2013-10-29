@@ -71,11 +71,13 @@
 						<td id="test3" nowrap onClick="addInput(this,3)"></td>
 						<td id="test4" nowrap onClick="addInput(this,4)"></td>
 						<td class=bntdelete><input type='button' name='add' value='add'
-							class="buttonserch" onClick="callscreeninsert()" /></td>
+							class="buttonserch" onClick="callscreeninsert()" />
+							<input type='button' name='search' value='search'
+							class="buttonserch" onClick="callscreensearch()" />
+							</td>
 					</tr>
 				</tbody>
 			</table>
-			<button id="test10" class=buttoninsert onClick="callscreeninsert()">add</button>
 		</div>
 		<!-- End .module-table-body -->
 	</div>

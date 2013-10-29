@@ -18,26 +18,6 @@ public class AdminController {
 		return new ModelAndView("category-manager");
 	}
 
-	@RequestMapping("/category/delete")
-	@ResponseBody
-	public ModelAndView deleteCategory() {
-		return new ModelAndView("delete-category");
-	}
-
-
-	@RequestMapping("/category/get")
-	@ResponseBody
-	public ModelAndView getCategories() {
-		return new ModelAndView("get-category");
-	}
-
-	@RequestMapping("/category/update")
-	@ResponseBody
-	public ModelAndView updateCategory() {
-		return new ModelAndView("update-category");
-	}
-	
-	
 	//media admin
 	@RequestMapping("/media")
 	@ResponseBody

@@ -12,8 +12,6 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import com.tbs.server.factories.CategoryFactory;
 import com.tbs.server.model.Category;
 import com.tbs.server.responder.RepondCategory;
-import com.tbs.server.responder.RespondNotification;
-import com.tbs.server.util.Util;
 
 
 @Controller
@@ -45,7 +43,7 @@ public class CategoryController {
 		for (Category category : categories) {
 			rcs.add(new RepondCategory(category));
 		}
-		return rcs ;
+		return rcs;
 	}
 	
 	@RequestMapping(value="/add", params={"categoryid","categoryname"})

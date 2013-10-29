@@ -131,13 +131,9 @@ function createTable(i, max_elem) {
  * <p>function load data display list user.</p>
  */
 function formLoad() {
-	$.get('/category/get', function(data) {
-		if(data!=null && data!=""){
-			createRow(data);
-		}else{
-			createTable(0,30);	
-		}
-	});
+	var url = '/category/get';
+	
+	requestUrl(url);
 }
 /**
  * <p>close tab input text.</p>
@@ -171,16 +167,9 @@ function reply_click(rowIdx) {
  */
 function delete_click(rowIdx) {
 	
-	var url ="/category/delete?categorykeystring="
-		+ members[rowIdx].categoryKeyString +'';
-	url=encodeURI(url);
-	$.get(url, function(data) {
-		if(data!=null && data!=""){
-			createRow(data);
-		}else{
-			createTable(0,30);	
-		}
-	});
+	var url ="/category/delete?categorykeystring=" + members[rowIdx].categoryKeyString +'';
+	
+	requestUrl(url);
 }
 
 /**
@@ -212,14 +201,33 @@ function addInput(elm,index) {
 function callscreeninsert() {
 	var categoryid = test1.innerHTML;
 	var categoryname = test2.innerHTML;
+	var url = '/category/add?categoryid=' + categoryid + '&categoryname=' + categoryname + '';
 
-	$.get('/category/add?categoryid=' + categoryid + '&categoryname=' + categoryname + '',
-			function(data) {
-		if(data!=null && data!=""){
-			createRow(data);
-		}else{
-			createTable(0,30);	
-		}
+	requestUrl(url);
+}
+function showDataTable(data) {
+	if(data!=null && data!=""){
+		createRow(data);
+	}else{
+		createTable(0,30);	
+	}
+}
+/**
+ * <p>call screen insert data.</p>
+ */
+
+function callscreensearch() {
+	var categoryid = test1.innerHTML;
+	var categoryname = test2.innerHTML;
+	var url = '/category/search?categoryid=' + categoryid + '&categoryname=' + categoryname + '';
+	
+	requestUrl(url);
+}
+
+function requestUrl(url) {
+	url=encodeURI(url);
+	$.get(url,function(data) {
+		showDataTable(data);
 	});
 }
 function displaymenu() {

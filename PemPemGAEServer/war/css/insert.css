@@ -1,0 +1,97 @@
+body {
+	font: 12px/1.5 "Lucida Sans Unicode", "Lucida Grande", sans-serif;
+	color: #444444;
+	background-color: #f6f6f6;
+}
+
+table.module-table-body2 {
+	float:left;
+	width: 100%;
+	margin-left: 20%;
+	margin-top: 15%;
+}
+button.buttoninsert{
+	background-color:#FFC0CB;
+	width: 70px;
+	height: 30px;
+	font-size: 16px;
+}
+button.buttonback{
+	background-color:#FFC0CB;
+	width: 150px;
+	height: 30px;
+	font-size: 16px;
+}
+div.module-table-body2 {
+	float:left;
+	width: 100%;
+}
+table.module-table-body2 tr.trtable2listitem{
+	background-color:#40E0D0;
+	border-collapse: separate;
+	border-right: 1px solid #aaaaaa;
+	border-left: 1px solid #aaaaaa;
+}
+table.module-table-body2 th.trtable2 {
+	background-color:#20B2AA;
+	padding: 5px;
+	border-right: 1px solid #d9d9d9;
+	border-bottom: 1px solid #d9d9d9;
+}
+table.module-table-body2  input.buttonserch{
+	background-color:#AFEEEE;
+	width: 70px;
+	height: 30px;
+	font-size: 16px;
+}
+table.module-table-body2  input.buttondelete{
+	background-color:#FFC0CB;
+	width: 70px;
+	height: 30px;
+	font-size: 16px;
+}
+table.module-table-body2 td.bntdelete{
+	background-color:#f6f6f6;
+	border-right: 0px;
+	font-size: 16px;
+}
+input.bntinsertcsv{
+	background-color:#FFC0CB;
+	width: 180px;
+	height: 30px;
+	font-size: 22px;
+}
+.myfileupload-buttonbar{
+	border: solid transparent;
+	opacity: 0.0;
+	-ms-transform: translate(-300px,-50px) scale(4); /* IE 9 */
+	-webkit-transform: translate(-300px,-50px) scale(4); /* Safari and Chrome */
+	-o-transform: translate(-300px, -50px) scale(4);/* Opera*/
+	-moz-transform: translate(-300px, 0) scale(4);/* Firefox */
+	direction: ltr;
+	cursor: pointer;
+}
+.myui-button {
+	width: 180px;
+	height: 30px;
+	float: right;
+	margin-right: 23%;
+	margin-top: 2%;
+	background-color: #FFC0CB;
+	position: relative;
+	cursor: pointer;
+	text-align: center;
+	overflow: hidden;
+}
+.myui-button1 {
+	width: 180px;
+	height: 30px;
+	float: right;
+	margin-top: 2%;
+	margin-right: 36%;
+	background-color: #FFC0CB;
+	position: relative;
+	cursor: pointer;
+	text-align: center;
+	overflow: hidden;
+}

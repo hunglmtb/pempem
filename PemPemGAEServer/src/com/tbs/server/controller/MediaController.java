@@ -9,7 +9,6 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.tbs.server.responder.CategoryRow;
 import com.tbs.server.responder.MediaInfo;
-import org.slim3.datastore.Datastore;
 
 
 @Controller

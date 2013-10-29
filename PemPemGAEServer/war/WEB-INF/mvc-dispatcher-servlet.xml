@@ -13,15 +13,16 @@
 		to avoid double instatetial movieController bean. <context:component-scan 
 		base-package="com.mkyong.controller" /> -->
 
-	<context:component-scan base-package="com.tbs.server.controller"/>
+	<context:component-scan base-package="com.tbs.server.controller" />
 
 	<mvc:annotation-driven />
-	
-<!-- 	<bean id="personService" class="com.codetutr.service.PersonServiceImpl" />
- -->	<bean
+
+	<!-- <bean id="personService" class="com.codetutr.service.PersonServiceImpl" 
+		/> -->
+	<bean
 		class="org.springframework.web.servlet.view.InternalResourceViewResolver">
 		<property name="prefix">
-			<value>/pages/</value>
+			<value>/views/</value>
 		</property>
 		<property name="suffix">
 			<value>.jsp</value>

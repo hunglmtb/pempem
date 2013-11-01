@@ -1,5 +1,6 @@
 var members;
 var numberFistPage;
+var categories;
 /**
  * <p>Callback function that displays the content.
  * Gets called every time the user clicks on a pagination link.</p>
@@ -99,16 +100,17 @@ function createTable(i, max_elem) {
 			} else {
 				strRow = "<tr class=odd>";
 			}
-			strRow += "<td>" + jsonTR.categoryId + "</td><td>" + jsonTR.categoryName
-			+ "</td><td>" + jsonTR.date + "</td><td>" + jsonTR.purchase
+			strRow += "<td>" + jsonTR.title + "</td><td>" + jsonTR.contentInfo
+			+ "</td><td>" + jsonTR.speaker + "</td><td>" + jsonTR.author
+			+ "</td><td>" + getCategoryNameById(jsonTR.categoryId)
 			+ "</td>";
 			strRow += "<td class = bntdelete><input type= 'button' id ="
 				+ members[rowIdx].macaddress
 				+ " name='edit' value='edit' class= 'buttonedit' onclick= 'reply_click("
 				+ rowIdx + ")'/>"
-				
+
 				+"<input type= 'button' id ="
-				+ members[rowIdx].categoryKeyString
+				+ members[rowIdx].mediaKeyString
 				+ " name='delete' value='delete' class= 'buttonedit' onclick= 'delete_click("
 				+ rowIdx + ")'/></td>";
 
@@ -136,9 +138,27 @@ function createTable(i, max_elem) {
  * <p>function load data display list user.</p>
  */
 function formLoad() {
+
 	var url = '/category/admin/get';
+	url=encodeURI(url);
 	
-	requestUrl(url);
+	$.get(url,function(data) {
+		if(data!=null && data!=""){
+			if (data.respondCode=="SUCCESS") {
+				categories = data.respondData;
+				var url2 = '/media/admin/all?limit='+10+"&offset="+0;
+				requestUrl(url2);
+				
+				initDropDown('#categorydropdown');
+			}
+			else{
+				alert("error: "+data.respondMessage);
+			}
+		}
+		else{
+			alert("error: none respond ");
+		}
+	});
 }
 /**
  * <p>close tab input text.</p>
@@ -171,11 +191,24 @@ function reply_click(rowIdx) {
  * @param rowIdx
  */
 function delete_click(rowIdx) {
-	
-	var url ="/category/delete?categorykeystring=" + members[rowIdx].categoryKeyString +'';
-	
+
+	var url ="/media/delete?mediakeystring=" + members[rowIdx].mediaKeyString +'';
+
 	requestUrl(url);
 }
+
+function getCategoryNameById(categoryId) {
+	if (categoryId!=null&&categoryId!='') {
+		var category;
+		for ( var i = 0; i < categories.length; i++) {
+			category = categories[i];
+			if (category.categoryId==categoryId) {
+				return category.categoryName;
+			}
+		}
+	}
+}
+
 
 /**
  * <p>add input text in row table.</p>
@@ -204,12 +237,53 @@ function addInput(elm,index) {
  */
 
 function callscreeninsert() {
-	var categoryid = test1.innerHTML;
-	var categoryname = test2.innerHTML;
-	var url = '/category/add?categoryid=' + categoryid + '&categoryname=' + categoryname + '';
+	var title = test1.innerHTML;
+	var contentInfo = test2.innerHTML;
+	var speaker = test3.innerHTML;
+	var author = test4.innerHTML;
+	
+	//get category
+	var e = document.getElementById("categorydropdown");
+	var categoryId = e.options[e.selectedIndex].value;
 
-	requestUrl(url);
+	var url = '/media/add';
+	var postData = initPostData('0',title,contentInfo,speaker,author,categoryId);
+
+	postUrl(url,postData);
 }
+
+function initPostData(mediaKeyString,title,contentInfo,speaker,author,categoryId) {
+
+	var postData = 	'{mediaKeyString:'+mediaKeyString+
+	', title: '+title+
+	', contentInfo: '+contentInfo+
+	', speaker: '+speaker+
+	', author: '+author+
+	', categoryId: '+categoryId+'}';
+
+	return postData;
+}
+
+function postUrl(url,postData) {
+	url=encodeURI(url);
+
+	$.ajax({
+		url: url,
+		type: "POST",
+		data: postData,
+		dataType: "json",
+		success: function (result) {
+			showDataTable(result);
+		},
+		error: function (xhr, ajaxOptions, thrownError) {
+			alert(xhr.status);
+			alert(thrownError);
+		}
+	});
+}
+
+
+
 function showDataTable(data) {
 	if(data!=null && data!=""){
 		createRow(data);
@@ -217,15 +291,24 @@ function showDataTable(data) {
 		createTable(0,30);	
 	}
 }
+
+function initDropDown(selector) {
+	var category;
+	for ( var i = 0; i < categories.length; i++) {
+		category = categories[i];
+		$(selector).append('<option value="'+category.categoryId+'">'+category.categoryName+'</option>');
+	}
+}
+
 /**
  * <p>call screen insert data.</p>
  */
 
 function callscreensearch() {
-	var categoryid = test1.innerHTML;
-	var categoryname = test2.innerHTML;
-	var url = '/category/search?categoryid=' + categoryid + '&categoryname=' + categoryname + '';
-	
+	var mediaid = test1.innerHTML;
+	var medianame = test2.innerHTML;
+	var url = '/media/search?mediaid=' + mediaid + '&medianame=' + medianame + '';
+
 	requestUrl(url);
 }
 
@@ -235,6 +318,7 @@ function requestUrl(url) {
 		showDataTable(data);
 	});
 }
+
 function displaymenu() {
 	window.document.location.href = "/BundleBoxService";
 }

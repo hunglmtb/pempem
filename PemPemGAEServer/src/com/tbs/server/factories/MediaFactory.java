@@ -1,13 +1,30 @@
 package com.tbs.server.factories;
 
+import java.util.Date;
+import java.util.List;
+
+import org.slim3.datastore.Datastore;
+import org.slim3.datastore.ModelQuery;
+
+import com.google.appengine.api.datastore.Key;
+import com.google.appengine.api.datastore.KeyFactory;
+import com.google.appengine.labs.repackaged.org.json.JSONException;
+import com.google.appengine.labs.repackaged.org.json.JSONObject;
+import com.tbs.server.meta.CategoryMeta;
+import com.tbs.server.meta.MediaMeta;
+import com.tbs.server.model.Category;
+import com.tbs.server.model.Media;
 import com.tbs.server.model.User;
+import com.tbs.server.util.Common;
+import com.tbs.server.util.Util;
+import com.tbs.server.util.Util.MediaQueryMode;
 
 
 
 public class MediaFactory extends EntityFactory {
-	
+
 	private static MediaFactory instance = null;
-	
+
 	public static MediaFactory getInstance() {
 		if (instance == null) {
 			instance = new MediaFactory();
@@ -15,15 +32,88 @@ public class MediaFactory extends EntityFactory {
 
 		return instance;
 	}
-	
-	public boolean insertOrUpdateMedia() {
-		return false;
+
+	public Media insertOrUpdateMedia(String jsonDataString) throws JSONException {
+
+		JSONObject jsonRecipe = new JSONObject(jsonDataString);
+		String mediaKey = jsonRecipe.getString(Util.MEDIA_KEY_STRING);
+
+		Media media = getMedia(mediaKey);
+
+		//insert or update
+		if(media != null){
+			media.setModifiedDate(new Date());
+		}
+		else{
+			media = new Media();
+			Key ancestorKey = KeyFactory.createKey("Media", "Media");
+			Key childKey = Datastore.allocateId(ancestorKey, Media.class);
+			media.setKey(childKey);
+			media.setRegisteredDate(new Date());
+		}
+
+		//set properties for media
+		media.setTitle(jsonRecipe.getString(MediaMeta.get().title.getName()));
+		media.setContentInfo(jsonRecipe.getString(MediaMeta.get().contentInfo.getName()));
+		media.setAuthor(jsonRecipe.getString(MediaMeta.get().author.getName()));
+		media.setSpeaker(jsonRecipe.getString(MediaMeta.get().speaker.getName()));
+		/*media.setMediaType(jsonRecipe.getInt(MediaMeta.get().mediaType.getName()));*/
+		media.setMediaType(Common.MEDIA_TYPE_AUDIO);
+
+		//TODO update later for need to update category and update web client too
+		//check update category
+		//set category
+		String categoryId = jsonRecipe.getString(CategoryMeta.get().categoryId.getName());
+		Category category = CategoryFactory.getInstance().getCategory(categoryId);
+		media.getCategoryRef().setModel(category);
+
+		Key key = Datastore.put(media);
+
+		if (key!=null) {
+			return media;
+		}
+		else return null;
 	}
+	
+	
+	private Media getMedia(String mediaKey) {
+		if (mediaKey!=null&&mediaKey.length()>0) {
+			try {
+				Key key = KeyFactory.stringToKey(mediaKey);
+				Media media = Datastore.get(Media.class, key);
+				return media;
+				
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		}
+		return null;
+	}
+
 	public User getMedia() {
 		return null;
 	}
 	public boolean deleteMedia() {
 		return false;
+	}
+
+	public List<Media> getMedia(int offset, int limit,
+			MediaQueryMode mode) {
+		// TODO Auto-generated method stub
+		switch (mode) {
+		case MEDIA_GET_ALL:
+			Key ancestorKey = KeyFactory.createKey("Media", "Media");
+			List<Media> lMedia = null;
+			ModelQuery<Media> mediaQuery  = Datastore.query(Media.class,ancestorKey);
+
+			lMedia = mediaQuery.asList();
+
+			return lMedia;
+
+		default:
+			break;
+		}
+		return null;
 	}
 }
 

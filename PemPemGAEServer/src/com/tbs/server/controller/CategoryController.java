@@ -12,6 +12,8 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import com.tbs.server.factories.CategoryFactory;
 import com.tbs.server.model.Category;
 import com.tbs.server.responder.RepondCategory;
+import com.tbs.server.responder.RespondNotification;
+import com.tbs.server.util.Util;
 
 
 @Controller
@@ -39,49 +41,101 @@ public class CategoryController {
 		categories.add(new CategoryRow(CATEGORY_ID_NAME_06, "Thơ quán",  false, null));
 		*/
 		List<Category> categories = CategoryFactory.getInstance().getCategory();
-		List<RepondCategory> rcs = new ArrayList<RepondCategory>();
-		for (Category category : categories) {
-			rcs.add(new RepondCategory(category));
-		}
+		List<RepondCategory> rcs = convertToRespond(categories);
 		return rcs;
 	}
 	
+	//for admin web client
+	@RequestMapping("/admin/get")
+	@ResponseBody
+	public RespondNotification getAllCategories() {
+		
+		List<RepondCategory> rcs = getCategories();
+		RespondNotification respond = null;
+		if (rcs!=null) {
+			respond = new RespondNotification(Util.RESPOND_SUCCESS_CODE, "OK", rcs);			
+		}
+		else{
+			respond = new RespondNotification(Util.RESPOND_ERROR_CODE, "error when query data", null);			
+		}
+		return respond;
+	}
+	
+	//for admin web client
+		@RequestMapping("/admin/getdropdown")
+		@ResponseBody
+		public RespondNotification getCategoryDropDown() {
+			
+			List<RepondCategory> rcs = getCategories();
+			RespondNotification respond = null;
+			if (rcs!=null) {
+				String dropDown = convertCategoriesToDropDownList(rcs);
+				respond = new RespondNotification(Util.RESPOND_SUCCESS_CODE, "OK", dropDown);			
+			}
+			else{
+				respond = new RespondNotification(Util.RESPOND_ERROR_CODE, "error when query data", null);			
+			}
+			return respond;
+		}
+	
+	
+	private String convertCategoriesToDropDownList(List<RepondCategory> rcs) {
+		String jDropDown = "{";
+		for (RepondCategory repondCategory : rcs) {
+			jDropDown += "\""+repondCategory.getCategoryId()+"\":\""+repondCategory.getCategoryName()+"\",";
+			
+		}
+		jDropDown += "}";
+		return jDropDown;
+	}
+
+	private List<RepondCategory> convertToRespond(List<Category> categories) {
+		if (categories!=null) {
+			List<RepondCategory> rcs = new ArrayList<RepondCategory>();
+			for (Category category : categories) {
+				rcs.add(new RepondCategory(category));
+				
+			}		
+			return rcs;
+		}
+		return null;
+	}
+
+	
 	@RequestMapping(value="/add", params={"categoryid","categoryname"})
 	@ResponseBody
-	public List<RepondCategory> addCategory(
+	public RespondNotification addCategory(
 			@RequestParam("categoryid") String categoryId,
 			@RequestParam("categoryname") String categoryName) {
 		
 		Category category;
-		List<RepondCategory> rcs =null;
+		
 		try {
 			category = CategoryFactory.getInstance().insertOrUpdateCategory(categoryId,categoryName);
 			if (category!=null) {
-				rcs = getCategories();				
+				return getAllCategories();				
 			}
 			
 		} catch (Exception e) {
 			_logger.warning(e.getMessage());
 			e.printStackTrace();
 		}
-		return rcs;
+		return new RespondNotification(Util.RESPOND_ERROR_CODE, "error when add data", null);		
 	}
+	
+	
 	
 	@RequestMapping(value="/delete", params={"categorykeystring"})
 	@ResponseBody
-	public List<RepondCategory> deleteCategory(@RequestParam("categorykeystring") String categoryKeyString) {
-		
-//		RespondNotification repondNotification = null;
-		List<RepondCategory> rcs = null;
+	public RespondNotification deleteCategory(@RequestParam("categorykeystring") String categoryKeyString) {
 		
 		try {
 			CategoryFactory.getInstance().deleteCategory(categoryKeyString);
-//			repondNotification = new RespondNotification(Util.SUCCESS, Util.DELETE_SUCCESS);
-			rcs = getCategories();				
+			return getAllCategories();		
+			
 		} catch (Exception e) {
 			_logger.warning(e.getMessage());
-//			repondNotification = new RespondNotification(Util.ERROR, Util.DELETE_ERROR);
 		}
-		return rcs;
+		return new RespondNotification(Util.RESPOND_ERROR_CODE, "error when delete data", null);		
 	}
 }

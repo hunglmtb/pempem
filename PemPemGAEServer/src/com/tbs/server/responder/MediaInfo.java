@@ -1,28 +1,38 @@
 package com.tbs.server.responder;
 
+import org.slim3.datastore.ModelRef;
+
+import com.google.appengine.api.datastore.KeyFactory;
+import com.tbs.server.model.Category;
+import com.tbs.server.model.Media;
 import com.tbs.server.util.Common;
 
 public class MediaInfo {
-
-	private String mMediaId;
+	
+	//core fields 
 	private String mTitle;
-	private String mMediaFileUrl;
-	private String mCategoryId;
-	private String mLikeCount;
-	private String mCommentCount;
 	private String mSpeaker;
 	private String mContentInfo;
-	private String mDuration;
-	private String mMediaLinkUrl;
 	private String mAuthor;
-	private String mPublishedDate;
-	private String mViewCount;
 	private int mMediaType = Common.MEDIA_TYPE_AUDIO;
+
+	//complete fields
+	
+	private String mMediaId;				//match to Key field in model
+	private String mCategoryId;				//match to category reference field in model
+	private String mMediaFileUrl;
+	private String mLikeCount;
+	private String mCommentCount;
+	private String mDuration;
+	private String mPublishedDate;
+	private String mMediaLinkUrl;
+	private String mViewCount;
 	private String mMediaImageThumbUrl;
 	private String mMediaImageUrl;
+	
+	//specific user fields
 	private String mEnjoyDonePercent;
 	private int mTimeDurationAgo;
-	
 	
 	public MediaInfo(String mediaId, String title, String mediaFileUrl,
 			String categoryID, String likeCount, String commentCount,
@@ -125,6 +135,39 @@ public class MediaInfo {
 		this.mViewCount = mViewCount;
 	}
 
+	public MediaInfo(Media media) {
+		if (media!=null) {
+			
+			//key field
+			this.mMediaId = KeyFactory.keyToString(media.getKey());
+			 ModelRef<Category> cr = media.getCategoryRef();
+			 
+			if (cr!=null&&cr.getModel()!=null) {
+				this.mCategoryId = cr.getModel().getCategoryId();
+			}
+			else{
+				this.mCategoryId = "";
+			}
+			
+			//core fields 
+			this.mTitle = media.getTitle();
+			this.mSpeaker = media.getSpeaker();
+			this.mContentInfo = media.getContentInfo();
+			this.mAuthor = media.getAuthor();
+			
+			this.mCommentCount = media.getCommentCount();
+			this.mMediaFileUrl = media.getMediaFileUrl();
+			this.mLikeCount = media.getLikeCount();
+			this.mDuration = media.getDuration();
+			this.mMediaLinkUrl = media.getMediaLinkUrl();
+			this.mPublishedDate = media.getPublishedDate();
+			this.mViewCount = media.getViewCount();
+			this.mMediaType = media.getMediaType();
+			this.mMediaImageThumbUrl = media.getMediaImageThumbUrl();
+			this.mMediaImageUrl = media.getMediaImageUrl();
+		}
+	}
+
 	public String getSpeaker() {
 		return mSpeaker;
 	}
@@ -212,7 +255,4 @@ public class MediaInfo {
 	public int getTimeDurationAgo() {
 		return mTimeDurationAgo;
 	}
-
-	
-	
 }

@@ -27,10 +27,22 @@ import com.google.appengine.api.files.FileServiceFactory;
 import com.google.appengine.api.files.FileWriteChannel;
 import com.google.appengine.labs.repackaged.org.json.JSONObject;
 
+@SuppressWarnings("deprecation")
 public class Util {
+	public static enum MediaQueryMode {
+		MEDIA_GET_ALL,
+		MEDIA_GET_NEW,
+		MEDIA_GET_NEWSFEED,
+		MEDIA_GET_HISTORY,
+		MEDIA_GET_RELATIVE
+	}
+	//category
 	public final static String CATEGORY_ID = "categoryId";
 	public final static String CATEGORY_NAME = "categoryName";
 	
+	//media
+	public final static String MEDIA_KEY_STRING = "mediaKeyString";
+
 	public final static String ERROR_CODE = "errorCode";
 	public final static String MESSAGE = "message";
 	public final static String USER_ID = "userId";
@@ -104,6 +116,10 @@ public class Util {
 	public static final String DELETE_SUCCESS = "DELETE_SUCCESS";
 	public static final String ERROR = "ERROR";
 	public static final String DELETE_ERROR = "DELETE_ERROR";
+	
+	//RESPOND
+	public static final String RESPOND_SUCCESS_CODE = "SUCCESS";
+	public static final String RESPOND_ERROR_CODE = "ERROR";
 
 
 	/**

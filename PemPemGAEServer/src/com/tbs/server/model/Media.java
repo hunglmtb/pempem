@@ -1,5 +1,7 @@
 package com.tbs.server.model;
 
+import java.util.Date;
+
 import org.slim3.datastore.Attribute;
 import org.slim3.datastore.InverseModelListRef;
 import org.slim3.datastore.Model;
@@ -24,23 +26,35 @@ public class Media {
 																				this);
 	
 	/////////////////// fields ///////////////////////////////
-	private String mediaId;
+	//input fields
 	private String title;
-	private String mediaFileUrl;
-	private String likeCount;
-	private String commentCount;
 	private String speaker;
 	private String contentInfo;
-	private String duration;
-	private String mediaLinkUrl;
 	private String author;
+
+	//TODO update later fields
+	private int mediaType;
+	
+	//upload field
+	private String mediaFileUrl;
+	private String mediaImageUrl;
+
+	//auto complete fields
+	private String mediaImageThumbUrl;
 	private String publishedDate;
 	private String viewCount;
+	private String mediaLinkUrl;
+	private String duration;
+	private String commentCount;
+	private String likeCount;
 //	private int mediaType = Common.MEDIA_TYPE_AUDIO;
-	private int mediaType;
-	private String mediaImageThumbUrl;
-	private String mediaImageUrl;
 	
+	//for admin
+	private Date registeredDate;
+	private Date modifiedDate;
+	
+	//unused fields
+	private String mediaId;
 	
     /////////////////// Attribute getters/setters //////////////////
 	public Key getKey() {
@@ -177,5 +191,21 @@ public class Media {
 
 	public void setMediaImageUrl(String mediaImageUrl) {
 		this.mediaImageUrl = mediaImageUrl;
+	}
+
+	public Date getRegisteredDate() {
+		return registeredDate;
+	}
+
+	public void setRegisteredDate(Date registeredDate) {
+		this.registeredDate = registeredDate;
+	}
+
+	public Date getModifiedDate() {
+		return modifiedDate;
+	}
+
+	public void setModifiedDate(Date modifiedDate) {
+		this.modifiedDate = modifiedDate;
 	}
 }

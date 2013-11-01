@@ -53,7 +53,7 @@ public class CategoryFactory extends EntityFactory {
 		else return null;
 	}
 
-	private Category getCategory(String categoryId) {
+	public Category getCategory(String categoryId) {
 		Category category = Datastore.query(Category.class)
 				.filter(CategoryMeta.get().categoryId.getName(), FilterOperator.EQUAL, categoryId)
 				.asSingle();
@@ -70,11 +70,9 @@ public class CategoryFactory extends EntityFactory {
 
 		Key ancestorKey = KeyFactory.createKey("Category", "Category");
 		List<Category> lCategory = null;
-		ModelQuery<Category> recipeQuery = null;
 		
-		recipeQuery = Datastore.query(Category.class,ancestorKey);
-
-		lCategory = recipeQuery.asList();
+		ModelQuery<Category> categoryQuery = Datastore.query(Category.class,ancestorKey);
+		lCategory = categoryQuery.asList();
 
 		return lCategory;
 

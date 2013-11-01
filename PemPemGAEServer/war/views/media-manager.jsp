@@ -6,7 +6,7 @@
 <title>Category Manager</title>
 <script type="text/javascript" src="/js/jquery-1.7.2.min.js"></script>
 <script type="text/javascript" src="/js/jquery.pagination.js"></script>
-<script type="text/javascript" src="/js/listuser.js"></script>
+<script type="text/javascript" src="/js/media-manger.js"></script>
 <link rel="stylesheet" href="/css/styles.css" type="text/css">
 </head>
 <body onload='formLoad()'>
@@ -16,10 +16,11 @@
 			<table id="myTable" class="module-table-body">
 				<thead>
 					<tr>
-						<th style="width: 13%">Category ID</th>
-						<th style="width: 14%">Category Name</th>
-						<th style="width: 16%">Created Date</th>
-						<th style="width: 15%">Modified Date</th>
+						<th style="width: 13%">Media Title</th>
+						<th style="width: 14%">Media Content</th>
+						<th style="width: 16%">Speaker</th>
+						<th style="width: 15%">Author</th>
+						<th style="width: 15%">Category</th>
 					</tr>
 				</thead>
 				<tbody id="contests_table"></tbody>
@@ -58,10 +59,11 @@
 			<table id="myTable2" class="module-table-body2">
 				<thead>
 					<tr>
-						<th class="trtable2" style="width: 13%">Category Id</th>
-						<th class="trtable2" style="width: 14%">Category Name</th>
-						<th class="trtable2" style="width: 16%">Created Date</th>
-						<th class="trtable2" style="width: 15%">Modified Date</th>
+						<th class="trtable2" style="width: 13%">Media Title</th>
+						<th class="trtable2" style="width: 14%">Media Content</th>
+						<th class="trtable2" style="width: 16%">Speaker</th>
+						<th class="trtable2" style="width: 15%">Author</th>
+						<th class="trtable2" style="width: 15%">Category</th>
 					</tr>
 				</thead>
 				<tbody id="contests_table1">
@@ -70,6 +72,7 @@
 						<td id="test2" nowrap onClick="addInput(this,2)"></td>
 						<td id="test3" nowrap onClick="addInput(this,3)"></td>
 						<td id="test4" nowrap onClick="addInput(this,4)"></td>
+						<td id="test5"><select id="categorydropdown" onChange=setCategory(this, this.id)></select></td>
 						<td class=bntdelete><input type='button' name='add' value='add'
 							class="buttonserch" onClick="callscreeninsert()" />
 							<input type='button' name='search' value='search'

@@ -9,7 +9,8 @@ import java.util.List;
 
 import javax.servlet.ServletContext;
 
-import com.tbs.server.responder.MediaInfo;
+import com.google.appengine.api.datastore.Key;
+import com.google.appengine.api.datastore.KeyFactory;
 
 
 public class Common {
@@ -34,6 +35,7 @@ public class Common {
 	public static final int MEDIA_TYPE_AUDIO = 0;
 	public static final int MEDIA_TYPE_VIDEO = 1;
 	public static final int MEDIA_TYPE_IMAGE = 2;
+	private static final String APP_DOMAIN = "langnghe.com";
 	public static String[] mediaId;
 	private static String[] title;
 	public static List<String> mediaFileUrl;
@@ -52,26 +54,6 @@ public class Common {
 	public static List<String> mediaImageUrl;
 	public static int[] mediaHistoryTime;
 
-	public static MediaInfo getMedia(int i) {
-		MediaInfo media = new MediaInfo(mediaId[i],
-				title[i],
-				mediaFileUrl.get(i),
-				categoryId[i],
-				likeCount[i],
-				commentCount[i],
-				speaker[i],
-				contentInfo[i],
-				duration[i],
-				mediaLinkUrl.get(i),
-				author[i],
-				publishedDate[i],
-				viewCount[i],
-				mediaType[i],
-				mediaImageThumbUrl.get(i),
-				mediaImageUrl.get(i));
-
-		return media;
-	}
 
 	public static List<String> loadArray(String path, ServletContext servletContext){
 		List<String> lines = new ArrayList<String>();
@@ -133,6 +115,16 @@ public class Common {
 			return null;
 		}
 		return lines;
+	}
+
+	public static String initMediaLinkUrl(Key key) {
+		try {
+			String url = "http://"+APP_DOMAIN+"/media/"+KeyFactory.keyToString(key);
+			return url;
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return null;
 	}
 
 }

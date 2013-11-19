@@ -103,7 +103,14 @@ function createTable(i, max_elem) {
 			strRow += "<td>" + jsonTR.title + "</td><td>" + jsonTR.contentInfo
 			+ "</td><td>" + jsonTR.speaker + "</td><td>" + jsonTR.author
 			+ "</td><td>" + getCategoryNameById(jsonTR.categoryId)
-			+ "</td>";
+			+ "</td><td><a href=\""+jsonTR.mediaImageUrl+"\">image</a>"
+			+ "</td><td><a href=\""+jsonTR.mediaFileUrl+"\">media file</a>"
+			+ "</td><td><a href=\""+jsonTR.mediaLinkUrl+"\">shared url</a></td>"
+			+ "</td><td>"+jsonTR.viewCount
+			+ "</td><td>"+jsonTR.duration
+			+ "</td><td>"+jsonTR.publishedDate
+			+ "</td><td>"+jsonTR.modifiedDate+"</td>";
+
 			strRow += "<td class = bntdelete><input type= 'button' id ="
 				+ members[rowIdx].macaddress
 				+ " name='edit' value='edit' class= 'buttonedit' onclick= 'reply_click("
@@ -192,7 +199,7 @@ function reply_click(rowIdx) {
  */
 function delete_click(rowIdx) {
 
-	var url ="/media/delete?mediakeystring=" + members[rowIdx].mediaKeyString +'';
+	var url ="/media/delete?mediakeystring=" + members[rowIdx].mediaId +'';
 
 	requestUrl(url);
 }
@@ -214,20 +221,32 @@ function getCategoryNameById(categoryId) {
  * <p>add input text in row table.</p>
  * @param elm
  */
-function addInput(elm,index) {
-	if (elm.getElementsByTagName('input').length > 0)
-		return;
+function addInput(td,index) {
+	elm=(td.firstElementChild||elem.firstChild);
+//	elm = td.getElementsByTagName('span');
+	/*if (elm.length > 0)
+		return;*/
+	
 	var value = elm.innerHTML;
 	elm.innerHTML = '';
 	var input = document.createElement('input');
 	input.setAttribute('type', 'text');
-	if(index == 2 || index == 4){
-		input.setAttribute('maxlength', 30);
-	}else{
-		input.setAttribute('maxlength', 20);
+	switch (index) {
+	case 2:
+		input.setAttribute('maxlength', 600);
+		break;
+	case 6:
+	case 7:
+		input.setAttribute('maxlength', 500);
+		break;	
+	default:
+		input.setAttribute('maxlength', 100);
+		break;
 	}
+	
 	input.setAttribute('value', value);
 	input.setAttribute('onBlur', 'closeInput(this)');
+	
 	elm.appendChild(input);
 	input.focus();
 }
@@ -237,29 +256,46 @@ function addInput(elm,index) {
  */
 
 function callscreeninsert() {
-	var title = test1.innerHTML;
-	var contentInfo = test2.innerHTML;
-	var speaker = test3.innerHTML;
-	var author = test4.innerHTML;
+	var title = getValue(test1);
+	var contentInfo = getValue(test2);
+	var speaker = getValue(test3);
+	var author = getValue(test4);
 	
 	//get category
 	var e = document.getElementById("categorydropdown");
 	var categoryId = e.options[e.selectedIndex].value;
+	//image
+	var imageUrl = getValue(test6);
+	var imageThumbUrl = getValue(test6);
+	var mediaFileUrl = getValue(test7);
 
 	var url = '/media/add';
-	var postData = initPostData('0',title,contentInfo,speaker,author,categoryId);
+	var postData = initPostData('0',title,contentInfo,speaker,author,categoryId,imageUrl,imageThumbUrl,mediaFileUrl);
 
 	postUrl(url,postData);
 }
 
-function initPostData(mediaKeyString,title,contentInfo,speaker,author,categoryId) {
+/**
+ * <p>call screen insert data.</p>
+ */
+
+function getValue(element) {
+	var child = (element.firstElementChild||element.firstChild);
+	return child.innerHTML;
+}
+
+function initPostData(mediaKeyString,title,contentInfo,speaker,author,categoryId,mediaImageUrl,mediaImageThumbUrl,mediaFileUrl) {
 
 	var postData = 	'{mediaKeyString:'+mediaKeyString+
 	', title: '+title+
 	', contentInfo: '+contentInfo+
 	', speaker: '+speaker+
 	', author: '+author+
-	', categoryId: '+categoryId+'}';
+	', categoryId: '+categoryId+
+	', mediaImageUrl: "'+mediaImageUrl+
+	'", mediaImageThumbUrl: "'+mediaImageThumbUrl+
+	'", mediaFileUrl: "'+mediaFileUrl+
+	'"}';
 
 	return postData;
 }

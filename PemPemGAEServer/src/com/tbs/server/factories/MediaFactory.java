@@ -41,15 +41,19 @@ public class MediaFactory extends EntityFactory {
 		Media media = getMedia(mediaKey);
 
 		//insert or update
+		Date now = new Date();
 		if(media != null){
-			media.setModifiedDate(new Date());
+			media.setModifiedDate(now);
 		}
 		else{
 			media = new Media();
 			Key ancestorKey = KeyFactory.createKey("Media", "Media");
 			Key childKey = Datastore.allocateId(ancestorKey, Media.class);
 			media.setKey(childKey);
-			media.setRegisteredDate(new Date());
+			media.setPublishedDate(now);
+			media.setPublishedDate(now);
+			media.setViewCount(0);
+			media.setDuration("4:17");
 		}
 
 		//set properties for media
@@ -59,6 +63,14 @@ public class MediaFactory extends EntityFactory {
 		media.setSpeaker(jsonRecipe.getString(MediaMeta.get().speaker.getName()));
 		/*media.setMediaType(jsonRecipe.getInt(MediaMeta.get().mediaType.getName()));*/
 		media.setMediaType(Common.MEDIA_TYPE_AUDIO);
+
+		//image
+		media.setMediaImageUrl(jsonRecipe.getString(MediaMeta.get().mediaImageUrl.getName()));
+		media.setMediaImageThumbUrl(jsonRecipe.getString(MediaMeta.get().mediaImageThumbUrl.getName()));
+
+		//media file 
+		media.setMediaFileUrl(jsonRecipe.getString(MediaMeta.get().mediaFileUrl.getName()));
+
 
 		//TODO update later for need to update category and update web client too
 		//check update category
@@ -70,19 +82,24 @@ public class MediaFactory extends EntityFactory {
 		Key key = Datastore.put(media);
 
 		if (key!=null) {
+			String url = Common.initMediaLinkUrl(key);
+			if (url!=null&&url.length()>0) {
+				media.setMediaLinkUrl(url);
+				Datastore.put(media);
+			}
 			return media;
 		}
 		else return null;
 	}
-	
-	
+
+
 	private Media getMedia(String mediaKey) {
 		if (mediaKey!=null&&mediaKey.length()>0) {
 			try {
 				Key key = KeyFactory.stringToKey(mediaKey);
 				Media media = Datastore.get(Media.class, key);
 				return media;
-				
+
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
@@ -93,13 +110,14 @@ public class MediaFactory extends EntityFactory {
 	public User getMedia() {
 		return null;
 	}
-	public boolean deleteMedia() {
-		return false;
+	public void deleteMedia(String mediakeystring) throws Exception{
+		Key categoryKey = KeyFactory.stringToKey(mediakeystring);			
+		Datastore.delete(categoryKey);
 	}
 
 	public List<Media> getMedia(int offset, int limit,
 			MediaQueryMode mode) {
-		// TODO Auto-generated method stub
+
 		switch (mode) {
 		case MEDIA_GET_ALL:
 			Key ancestorKey = KeyFactory.createKey("Media", "Media");

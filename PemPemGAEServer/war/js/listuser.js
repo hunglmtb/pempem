@@ -102,10 +102,11 @@ function createTable(i, max_elem) {
 			strRow += "<td>" + jsonTR.categoryId + "</td><td>" + jsonTR.categoryName
 			+ "</td><td>" + jsonTR.date + "</td><td>" + jsonTR.purchase
 			+ "</td>";
+			
 			strRow += "<td class = bntdelete><input type= 'button' id ="
-				+ members[rowIdx].macaddress
-				+ " name='edit' value='edit' class= 'buttonedit' onclick= 'reply_click("
-				+ rowIdx + ")'/>"
+				+ 'edit'+ members[rowIdx].categoryKeyString
+				+ " name='edit' value='edit' class= 'buttonedit' onclick= 'reply_click(this,"
+				+ members[rowIdx].categoryKeyString + ")'/>"
 				
 				+"<input type= 'button' id ="
 				+ members[rowIdx].categoryKeyString
@@ -154,17 +155,14 @@ function closeInput(elm) {
  * <p>call page edit user.</p>
  * @param rowIdx
  */
-function reply_click(rowIdx) {
-	var url ="/BundleBoxService/webapps/myapp/html/usermanager/edituser.html?macaddress="
-		+ members[rowIdx].macaddress
-		+ "&serial="
-		+ members[rowIdx].serial
-		+ "&date="
-		+ members[rowIdx].date
-		+ "&purchase="
-		+ members[rowIdx].purchase;
-	url=encodeURI(url);
-	window.document.location.href = url;
+function reply_click(element,id) {
+	if (element.value=='edit') {
+		
+		element.value="submit";
+	}
+	else{
+		element.value="edit";
+	}
 }
 /**
  * <p>call page edit user.</p>

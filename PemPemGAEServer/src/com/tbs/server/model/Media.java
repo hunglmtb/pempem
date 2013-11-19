@@ -15,16 +15,16 @@ public class Media {
 	/////////////////// Attributes ///////////////////////////////
 	@Attribute(primaryKey = true)
 	private Key key;
-	
+
 	/////////////////// Relationship ///////////////////////////////
-    private ModelRef<Category> categoryRef = new ModelRef<Category>(Category.class);
+	private ModelRef<Category> categoryRef = new ModelRef<Category>(Category.class);
 
 	@Attribute(persistent = false)
-    private InverseModelListRef<History, Media> historyListRef = new  InverseModelListRef<History,Media>
-																				(History.class,
-																				HistoryMeta.get().mediaRef.getName(),
-																				this);
-	
+	private InverseModelListRef<History, Media> historyListRef = new  InverseModelListRef<History,Media>
+	(History.class,
+			HistoryMeta.get().mediaRef.getName(),
+			this);
+
 	/////////////////// fields ///////////////////////////////
 	//input fields
 	private String title;
@@ -34,29 +34,28 @@ public class Media {
 
 	//TODO update later fields
 	private int mediaType;
-	
+
 	//upload field
 	private String mediaFileUrl;
 	private String mediaImageUrl;
 
 	//auto complete fields
-	private String mediaImageThumbUrl;
-	private String publishedDate;
-	private String viewCount;
 	private String mediaLinkUrl;
+	private String mediaImageThumbUrl;
 	private String duration;
+	private int viewCount;
 	private String commentCount;
 	private String likeCount;
-//	private int mediaType = Common.MEDIA_TYPE_AUDIO;
-	
+	//	private int mediaType = Common.MEDIA_TYPE_AUDIO;
+
 	//for admin
-	private Date registeredDate;
+	private Date publishedDate;
 	private Date modifiedDate;
-	
+
 	//unused fields
 	private String mediaId;
-	
-    /////////////////// Attribute getters/setters //////////////////
+
+	/////////////////// Attribute getters/setters //////////////////
 	public Key getKey() {
 		return key;
 	}
@@ -153,19 +152,19 @@ public class Media {
 		this.author = author;
 	}
 
-	public String getPublishedDate() {
+	public Date getPublishedDate() {
 		return publishedDate;
 	}
 
-	public void setPublishedDate(String publishedDate) {
+	public void setPublishedDate(Date publishedDate) {
 		this.publishedDate = publishedDate;
 	}
 
-	public String getViewCount() {
+	public int getViewCount() {
 		return viewCount;
 	}
 
-	public void setViewCount(String viewCount) {
+	public void setViewCount(int viewCount) {
 		this.viewCount = viewCount;
 	}
 
@@ -191,14 +190,6 @@ public class Media {
 
 	public void setMediaImageUrl(String mediaImageUrl) {
 		this.mediaImageUrl = mediaImageUrl;
-	}
-
-	public Date getRegisteredDate() {
-		return registeredDate;
-	}
-
-	public void setRegisteredDate(Date registeredDate) {
-		this.registeredDate = registeredDate;
 	}
 
 	public Date getModifiedDate() {

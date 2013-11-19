@@ -107,6 +107,15 @@ public class MediaController {
 			@RequestParam("limit") String limit) {
 		return null;
 	}
+	
+	//api
+	@RequestMapping(value="/update/viewcount", params={"userid","mediaid"})
+	@ResponseBody
+	public List<MediaInfo> updateViewCount(@RequestParam("userid") String userid,
+			@RequestParam("mediaid") int mediaid) {
+		return null;
+	}
+
 
 	//add api
 	@RequestMapping(value = "/add", method = RequestMethod.POST, produces = "application/json; charset=utf-8")
@@ -130,7 +139,24 @@ public class MediaController {
 		}
 		return new RespondNotification(Util.RESPOND_ERROR_CODE, "post data error or error when get post data string", null);		
 	}
+	
 
+	@RequestMapping(value="/delete", params={"mediakeystring"})
+	@ResponseBody
+	public RespondNotification deleteCategory(@RequestParam("mediakeystring") String mediakeystring) {
+		
+		try {
+			MediaFactory.getInstance().deleteMedia(mediakeystring);
+			List<MediaInfo> ml = getAll(0, 10);
+			return new RespondNotification(Util.RESPOND_SUCCESS_CODE, "ok", ml);	
+			
+		} catch (Exception e) {
+			_logger.warning(e.getMessage());
+		}
+		return new RespondNotification(Util.RESPOND_ERROR_CODE, "error when delete media", null);		
+	}
+
+	//methods
 	private List<MediaInfo> getContiguousMedia(Media media) {
 		//TODO UPDATE LATER, THIS IS ONLY FOR TEST
 		return getAll(0, 10);

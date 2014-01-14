@@ -91,7 +91,7 @@ public class MediaInfo {
 			this.mViewCount = media.getViewCount();
 			this.mMediaType = media.getMediaType();
 			this.mMediaImageThumbUrl = media.getMediaImageThumbUrl();
-			this.mMediaImageUrl = media.getMediaImageUrl();
+			this.mMediaImageUrl = "/media/image?imagekey="+media.getMediaImageUrl();
 		}
 	}
 

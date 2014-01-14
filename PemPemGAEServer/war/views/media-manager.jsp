@@ -6,6 +6,8 @@
 
 <%
 	BlobstoreService blobstoreService = BlobstoreServiceFactory.getBlobstoreService();
+	Object result = request.getAttribute("result");
+	
 %>
 
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
@@ -22,6 +24,12 @@
 	<button class=buttoninsert onClick="displaymenu()">Back</button>
 	<div class="module">
 		<div class="module-table-body">
+		
+<%
+	if(result!=null){
+		out.print("<div><p>add result : " + result.toString()+"<p/></div>");
+	}
+%>
 			<table id="myTable" class="module-table-body">
 				<thead>
 					<tr>
@@ -72,6 +80,10 @@
 					</form>
 				</div>
 			</div>
+			
+		<form action="<%=blobstoreService.createUploadUrl("/admin/upload")%>"
+			method="post" enctype="multipart/form-data">
+			
 			<table id="myTable2" class="module-table-body2">
 				<thead>
 					<tr>
@@ -86,33 +98,25 @@
 				</thead>
 				<tbody id="contests_table1">
 					<tr class="trtable2listitem">
-						<td id="test1" onClick="addInput(this,1)"><span></span></td>
-						<td id="test2" onClick="addInput(this,2)"><span></span></td>
-						<td id="test3" onClick="addInput(this,3)"><span></span></td>
-						<td id="test4" onClick="addInput(this,4)"><span></span></td>
-						<td id="test5"><select id="categorydropdown"
-							onChange=setCategory(this,this.id)></select></td>
-						<td id="test6" onClick="addInput(this,6)"><span></span></td>
-						<td id="test7" onClick="addInput(this,7)"><span></span></td>
-						<td class=bntdelete><input type='button' name='add'
-							value='add' class="buttonserch" onClick="callscreeninsert()" />
-							<input type='button' name='search' value='search'
-							class="buttonserch" onClick="callscreensearch()" /></td>
+						<td id="test1"><input type="text" name="title"></td>
+						<td style="width: 25%"><input type="text" name="content"></td>
+						<td style="width: 6%"><input type="text" name="speaker"></td>
+						<td style="width: 6%"><input type="text" name="author"></td>
+						<td style="width: 6%"><select name="categoryId" id="categorydropdown" onChange=setCategory(this,this.id)></select></td>
+						<td style="width: 12%"><input type="file" name="imageFile"></td>
+						<td style="width: 12%"><input type="file" name="mediaFile"></td>
+						<td style="width: 4%"><input type="submit" value="add"></td>
 					</tr>
-					<tr></tr>
 				</tbody>
 			</table>
+		</form>
 
 		</div>
 		<!-- End .module-table-body -->
 	</div>
 	<!-- End .module -->
-	keke
-				<form action="<%=blobstoreService.createUploadUrl("/admin/upload")%>"
-				method="post" enctype="multipart/form-data">
-				<input type="text" name="foo">
-				<input type="file" name="uploadFile">
-				<input type="submit" value="Submit">
-			</form>
+	<div>
+		
+	</div>
 </body>
 </html>

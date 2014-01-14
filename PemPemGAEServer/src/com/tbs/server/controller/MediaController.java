@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.logging.Logger;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -12,6 +13,9 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.google.appengine.api.blobstore.BlobKey;
+import com.google.appengine.api.blobstore.BlobstoreService;
+import com.google.appengine.api.blobstore.BlobstoreServiceFactory;
 import com.google.appengine.labs.repackaged.org.json.JSONException;
 import com.tbs.server.factories.MediaFactory;
 import com.tbs.server.model.Media;
@@ -58,7 +62,7 @@ public class MediaController {
 			for (Media media : mediaList) {
 				mediaInfoList.add(new MediaInfo(media));
 			}
-			return mediaInfoList;			
+			return mediaInfoList;
 		}
 		return null;
 	}
@@ -174,4 +178,35 @@ public class MediaController {
 		return null;
 	}
 
+	
+	/**
+	 * getImageRecipe
+	 * 
+	 * @param imageBlobKey
+	 *            : recipe key
+	 * @param index
+	 *            : index get image or thumbnails
+	 * @param req
+	 *            : HttpServletRequest
+	 * @param resp
+	 *            : HttpServletResponse
+	 */
+	
+	@RequestMapping(value = "/image", params={"imagekey"}, method = RequestMethod.GET)
+	@ResponseBody
+	public void getImageRecipe(@RequestParam("imagekey") String imageBlobKey,
+								HttpServletRequest req,
+								HttpServletResponse resp) {
+		
+		try {
+			BlobstoreService blobstoreService = BlobstoreServiceFactory.getBlobstoreService();
+			BlobKey imageKey = new BlobKey(imageBlobKey);
+			blobstoreService.serve(imageKey, resp);
+			
+		} catch (IOException e) {
+			e.printStackTrace();
+			_logger.warning(e.getMessage());
+			_logger.warning(e.getStackTrace().toString());
+		}
+	}
 }

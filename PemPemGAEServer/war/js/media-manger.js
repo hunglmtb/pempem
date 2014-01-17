@@ -100,11 +100,16 @@ function createTable(i, max_elem) {
 			} else {
 				strRow = "<tr class=odd>";
 			}
+			
+
+			var url = '/media?key=';
+			url=encodeURI(url);
+			
 			strRow += "<td>" + jsonTR.title + "</td><td>" + jsonTR.contentInfo
 			+ "</td><td>" + jsonTR.speaker + "</td><td>" + jsonTR.author
 			+ "</td><td>" + getCategoryNameById(jsonTR.categoryId)
 			+ "</td><td><a href=\""+jsonTR.mediaImageUrl+"\">image</a>"
-			+ "</td><td><a href=\""+jsonTR.mediaFileUrl+"\">media file</a>"
+			+ "</td><td><audio controls> <source src=\"/media/play?key="+jsonTR.mediaFileUrl+"\" type=\"audio/mpeg\"> play media. </audio>"
 			+ "</td><td><a href=\""+jsonTR.mediaLinkUrl+"\">shared url</a></td>"
 			+ "</td><td>"+jsonTR.viewCount
 			+ "</td><td>"+jsonTR.duration

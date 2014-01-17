@@ -12,10 +12,13 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.servlet.ModelAndView;
 
 import com.google.appengine.api.blobstore.BlobKey;
 import com.google.appengine.api.blobstore.BlobstoreService;
 import com.google.appengine.api.blobstore.BlobstoreServiceFactory;
+import com.google.appengine.api.images.ImagesService;
+import com.google.appengine.api.images.ImagesServiceFactory;
 import com.google.appengine.labs.repackaged.org.json.JSONException;
 import com.tbs.server.factories.MediaFactory;
 import com.tbs.server.model.Media;
@@ -29,6 +32,7 @@ import com.tbs.server.util.Util;
 @RequestMapping("/media")
 public class MediaController {
 	private static final Logger _logger = Logger.getLogger(MediaController.class.getName());
+	private BlobstoreService blobstoreService = BlobstoreServiceFactory.getBlobstoreService();
 
 	//get api
 	//for admin : web client
@@ -203,10 +207,22 @@ public class MediaController {
 			BlobKey imageKey = new BlobKey(imageBlobKey);
 			blobstoreService.serve(imageKey, resp);
 			
+//			ImagesService imagesService = ImagesServiceFactory.getImagesService();
+//			imagesService.getServingUrl(imageKey);
+			
 		} catch (IOException e) {
 			e.printStackTrace();
 			_logger.warning(e.getMessage());
 			_logger.warning(e.getStackTrace().toString());
+		}
+	}
+	
+	@RequestMapping(value="/play", params={"key"})
+	@ResponseBody
+	public void serveMedia(@RequestParam("key") String key,HttpServletResponse res) throws IOException {
+		if (key!=null) {
+			BlobKey blobKey = new BlobKey(key);
+			blobstoreService.serve(blobKey, res);
 		}
 	}
 }

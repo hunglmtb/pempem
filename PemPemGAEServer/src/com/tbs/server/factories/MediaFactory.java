@@ -93,6 +93,69 @@ public class MediaFactory extends EntityFactory {
 	}
 
 
+	public Media insertOrUpdateMedia(String mediaKey,
+									String title,
+									String content,
+									String speaker,
+									String author,
+									String imageBlobKey,
+									String mediaFileBlobKey,
+									String categoryId){
+
+
+		Media media = getMedia(mediaKey);
+
+		//insert or update
+		Date now = new Date();
+		if(media != null){
+			media.setModifiedDate(now);
+		}
+		else{
+			media = new Media();
+			Key ancestorKey = KeyFactory.createKey("Media", "Media");
+			Key childKey = Datastore.allocateId(ancestorKey, Media.class);
+			media.setKey(childKey);
+			media.setPublishedDate(now);
+			media.setPublishedDate(now);
+			media.setViewCount(0);
+			media.setDuration("4:17");
+		}
+
+		//set properties for media
+		media.setTitle(title);
+		media.setContentInfo(content);
+		media.setAuthor(author);
+		media.setSpeaker(speaker);
+		/*media.setMediaType(jsonRecipe.getInt(MediaMeta.get().mediaType.getName()));*/
+		media.setMediaType(Common.MEDIA_TYPE_AUDIO);
+
+		//image
+		media.setMediaImageUrl(imageBlobKey);
+		media.setMediaImageThumbUrl(imageBlobKey);
+
+		//media file 
+		media.setMediaFileUrl(mediaFileBlobKey);
+
+
+		//TODO update later for need to update category and update web client too
+		//check update category
+		//set category
+		//String categoryId = jsonRecipe.getString(CategoryMeta.get().categoryId.getName());
+		Category category = CategoryFactory.getInstance().getCategory(categoryId);
+		media.getCategoryRef().setModel(category);
+
+		Key key = Datastore.put(media);
+
+		if (key!=null) {
+			String url = Common.initMediaLinkUrl(key);
+			if (url!=null&&url.length()>0) {
+				media.setMediaLinkUrl(url);
+				Datastore.put(media);
+			}
+			return media;
+		}
+		else return null;
+	}
 	private Media getMedia(String mediaKey) {
 		if (mediaKey!=null&&mediaKey.length()>0) {
 			try {

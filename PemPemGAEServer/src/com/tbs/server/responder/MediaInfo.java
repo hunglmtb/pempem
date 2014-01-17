@@ -2,13 +2,19 @@ package com.tbs.server.responder;
 
 import org.slim3.datastore.ModelRef;
 
+import com.google.appengine.api.blobstore.BlobKey;
 import com.google.appengine.api.datastore.KeyFactory;
+import com.google.appengine.api.images.ImagesService;
+import com.google.appengine.api.images.ImagesServiceFactory;
+import com.sun.xml.internal.bind.v2.runtime.reflect.opt.Const;
 import com.tbs.server.model.Category;
 import com.tbs.server.model.Media;
 import com.tbs.server.util.Common;
 
 public class MediaInfo {
-	
+	private static ImagesService imagesService = ImagesServiceFactory.getImagesService();
+
+	public static String HOST_NAME = "127.0.0.1";
 	//core fields 
 	private String mTitle;
 	private String mSpeaker;
@@ -91,7 +97,9 @@ public class MediaInfo {
 			this.mViewCount = media.getViewCount();
 			this.mMediaType = media.getMediaType();
 			this.mMediaImageThumbUrl = media.getMediaImageThumbUrl();
-			this.mMediaImageUrl = "/media/image?imagekey="+media.getMediaImageUrl();
+			BlobKey imageKey = new BlobKey(media.getMediaImageUrl());
+			this.mMediaImageUrl = imagesService.getServingUrl(imageKey);
+			this.mMediaImageUrl = this.mMediaImageUrl.replaceFirst("0.0.0.0", HOST_NAME);
 		}
 	}
 

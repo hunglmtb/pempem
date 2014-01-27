@@ -2,12 +2,14 @@ package com.tbs.server.controller;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.logging.Logger;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -224,5 +226,15 @@ public class MediaController {
 			BlobKey blobKey = new BlobKey(key);
 			blobstoreService.serve(blobKey, res);
 		}
+	}
+	
+	@RequestMapping(value="/action", params={"key"})
+	@ResponseBody
+	public ModelAndView actionMedia(@RequestParam("key") String key,HttpServletResponse res,ModelMap model) throws IOException {
+		ModelAndView  redirect = new ModelAndView("media-play");
+		if (key!=null) {
+			model.addAttribute("mediaKey", key);
+		}
+		return redirect;
 	}
 }

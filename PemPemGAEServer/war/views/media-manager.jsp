@@ -33,18 +33,18 @@
 			<table id="myTable" class="module-table-body">
 				<thead>
 					<tr>
-						<th style="width: 12%">Media Title</th>
+						<th style="width: 10%">Media Title</th>
 						<th style="width: 25%">Media Content</th>
-						<th style="width: 6%">Speaker</th>
-						<th style="width: 6%">Author</th>
+						<th style="width: 5%">Speaker</th>
+						<th style="width: 5%">Author</th>
 						<th style="width: 10%">Category</th>
-						<th style="width: 6%">Image url</th>
+						<th style="width: 10%">Image</th>
 						<th style="width: 6%">Media Link</th>
-						<th style="width: 6%">shared Link</th>
-						<th style="width: 6%">view count</th>
-						<th style="width: 6%">duration</th>
-						<th style="width: 6%">published date</th>
-						<th style="width: 6%">modified date</th>
+						<th style="width: 8%">shared Link</th>
+						<th style="width: 5%">view count</th>
+						<th style="width: 5%">duration</th>
+						<th style="width: 5%">published date</th>
+						<th style="width: 5%">modified date</th>
 					</tr>
 				</thead>
 				<tbody id="contests_table"></tbody>

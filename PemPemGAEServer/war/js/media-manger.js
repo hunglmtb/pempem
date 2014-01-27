@@ -108,9 +108,9 @@ function createTable(i, max_elem) {
 			strRow += "<td>" + jsonTR.title + "</td><td>" + jsonTR.contentInfo
 			+ "</td><td>" + jsonTR.speaker + "</td><td>" + jsonTR.author
 			+ "</td><td>" + getCategoryNameById(jsonTR.categoryId)
-			+ "</td><td><a href=\""+jsonTR.mediaImageUrl+"\">image</a>"
-			+ "</td><td><audio controls> <source src=\"/media/play?key="+jsonTR.mediaFileUrl+"\" type=\"audio/mpeg\"> play media. </audio>"
-			+ "</td><td><a href=\""+jsonTR.mediaLinkUrl+"\">shared url</a></td>"
+			+ '</td><td> <img src="'+jsonTR.mediaImageUrl+'" width="72" height="72" alt="" style="float:left;" align="left">'
+			+ '</td><td><a href="/media/action?key='+jsonTR.mediaFileUrl+'">action</a>'
+			+ '</td><td><a href="'+jsonTR.mediaLinkUrl+'">shared url</a></td>'
 			+ "</td><td>"+jsonTR.viewCount
 			+ "</td><td>"+jsonTR.duration
 			+ "</td><td>"+jsonTR.publishedDate

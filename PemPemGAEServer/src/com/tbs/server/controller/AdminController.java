@@ -1,6 +1,7 @@
 package com.tbs.server.controller;
 
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
@@ -23,7 +24,7 @@ import com.google.appengine.api.images.ImagesService;
 import com.google.appengine.api.images.ImagesServiceFactory;
 import com.tbs.server.factories.MediaFactory;
 import com.tbs.server.model.Media;
-
+import com.tbs.server.util.Util;
 @Controller
 @RequestMapping("/admin")
 public class AdminController {
@@ -49,7 +50,7 @@ public class AdminController {
 	//upload file 
 	@RequestMapping(value = "/upload", method = RequestMethod.POST)
 	@ResponseBody
-	public ModelAndView  upload(HttpServletRequest req,ModelMap model) {
+	public ModelAndView  upload(HttpServletRequest req,ModelMap model) throws UnsupportedEncodingException {
 
 		ModelAndView  redirect = new ModelAndView("media-manager");
 
@@ -59,10 +60,10 @@ public class AdminController {
 		List<BlobKey> mediaBlobKeys = blobs.get("mediaFile");
 
 		//get text fields
-		String title = req.getParameter("title");
-		String content = req.getParameter("content");
-		String speaker = req.getParameter("speaker");
-		String author = req.getParameter("author");
+		String title =  Util.getUtf8String(req.getParameter("title"));
+		String content = Util.getUtf8String(req.getParameter("content"));
+		String speaker = Util.getUtf8String(req.getParameter("speaker"));
+		String author = Util.getUtf8String(req.getParameter("author"));
 		String mediaKey = req.getParameter("mediaKey");
 		String categoryId = req.getParameter("categoryId");
 

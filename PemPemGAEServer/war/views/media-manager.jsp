@@ -34,7 +34,7 @@
 				<thead>
 					<tr>
 						<th style="width: 10%">Media Title</th>
-						<th style="width: 25%">Media Content</th>
+						<th style="width: 25%">Nội dung</th>
 						<th style="width: 5%">Speaker</th>
 						<th style="width: 5%">Author</th>
 						<th style="width: 10%">Category</th>

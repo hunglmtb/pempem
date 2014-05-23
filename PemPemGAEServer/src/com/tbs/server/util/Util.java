@@ -273,4 +273,16 @@ public class Util {
 		calendar.add(Calendar.HOUR, 9);
 		return calendar.getTime();
 	}
+
+	public static String getUtf8String(String content) {
+		String result = content;
+		try {
+			byte[] bytes;
+			bytes = content.getBytes("ISO-8859-1");
+			result = new String(bytes,"UTF-8");
+		} catch (UnsupportedEncodingException e) {
+			e.printStackTrace();
+		}
+		return result ;
+	}
 }

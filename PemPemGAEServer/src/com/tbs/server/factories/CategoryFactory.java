@@ -10,6 +10,7 @@ import org.slim3.datastore.ModelQuery;
 import com.google.appengine.api.datastore.Key;
 import com.google.appengine.api.datastore.KeyFactory;
 import com.google.appengine.api.datastore.Query.FilterOperator;
+import com.google.gwt.rpc.server.Pair;
 import com.tbs.server.meta.CategoryMeta;
 import com.tbs.server.model.Category;
 import com.tbs.server.responder.RepondCategory;
@@ -107,6 +108,15 @@ public class CategoryFactory extends EntityFactory {
 			return rcs;
 		}
 		return null;
+	}
+
+	public List<Pair<String, String>> getCategoryPairList() {
+		 List<Category> categories = getCategory();
+		 List<Pair<String, String>> ctl = new ArrayList<Pair<String, String>>();
+		 for (Category category : categories) {
+			 ctl.add(new Pair<String, String>(category.getCategoryId(), category.getCategoryName()));
+		}
+		return ctl ;
 	}
 }
 

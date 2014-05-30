@@ -10,6 +10,7 @@ import com.google.appengine.api.datastore.Key;
 import com.google.appengine.api.datastore.KeyFactory;
 import com.google.appengine.labs.repackaged.org.json.JSONException;
 import com.google.appengine.labs.repackaged.org.json.JSONObject;
+import com.google.gwt.rpc.server.Pair;
 import com.tbs.server.meta.CategoryMeta;
 import com.tbs.server.meta.MediaMeta;
 import com.tbs.server.model.Category;
@@ -18,6 +19,7 @@ import com.tbs.server.model.User;
 import com.tbs.server.util.Common;
 import com.tbs.server.util.Util;
 import com.tbs.server.util.Util.MediaQueryMode;
+import com.tbs.server.util.UtilView;
 
 
 
@@ -181,6 +183,7 @@ public class MediaFactory extends EntityFactory {
 	public void deleteMedia(String mediakeystring) throws Exception{
 		Key categoryKey = KeyFactory.stringToKey(mediakeystring);			
 		Datastore.delete(categoryKey);
+
 	}
 
 	public List<Media> getMedia(int offset, int limit,

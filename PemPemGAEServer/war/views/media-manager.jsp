@@ -2,6 +2,9 @@
 <%@ page language="java" contentType="text/html; charset=utf-8"
 	pageEncoding="UTF-8"%>
 <%@ page import="com.tbs.server.responder.MediaInfo"%>
+<%@ page import="com.tbs.server.factories.CategoryFactory"%>
+<%@ page import="com.tbs.server.util.UtilView"%>
+<%@ page import="com.google.gwt.rpc.server.Pair"%>
 <%@ page import="java.util.List"%>
 <%@ page import="com.google.appengine.api.blobstore.BlobstoreServiceFactory"%>
 <%@ page import="com.google.appengine.api.blobstore.BlobstoreService"%>
@@ -12,6 +15,9 @@
 	Object rs = request.getAttribute("mediaList");
 	List<MediaInfo> mediaList = new ArrayList<MediaInfo>();
 	mediaList.addAll((ArrayList<MediaInfo>)rs);
+	
+	List<Pair<String, String>> list = CategoryFactory.getInstance().getCategoryPairList();
+	String dropDownList = UtilView.getInstance().buildDropDownList(list);
 %>
 
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
@@ -154,7 +160,7 @@ for (MediaInfo mediaInfo : mediaList) {
 			<td><input type="text" name="content" value="<%=mediaInfo.getContentInfo()%>"></td>
 			<td><input type="text" name="speaker" value="<%=mediaInfo.getSpeaker()%>"></td>
 			<td><input type="text" name="author" value="<%=mediaInfo.getAuthor()%>"></td>
-			<td><select name="categoryId" id="categorydropdown" onChange=setCategory(this,this.id)></select></td>
+			<td><%=dropDownList%></td>
 			<td><input type="file" name="imageFile"></td>
 			<td><input type="file" name="mediaFile"></td>
 			<td><input type="submit" value="add"></td>

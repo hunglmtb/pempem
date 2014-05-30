@@ -7,6 +7,7 @@ import com.google.appengine.api.datastore.KeyFactory;
 import com.google.appengine.api.images.ImagesService;
 import com.google.appengine.api.images.ImagesServiceFactory;
 import com.sun.xml.internal.bind.v2.runtime.reflect.opt.Const;
+import com.tbs.server.factories.CategoryFactory;
 import com.tbs.server.model.Category;
 import com.tbs.server.model.Media;
 import com.tbs.server.util.Common;
@@ -35,6 +36,8 @@ public class MediaInfo {
 	private int mViewCount;
 	private String mMediaImageThumbUrl;
 	private String mMediaImageUrl;
+	private String mCategoryName = "";
+	//private String mCategoryKeyString = "";
 	
 	//specific user fields
 	private String mEnjoyDonePercent;
@@ -50,7 +53,7 @@ public class MediaInfo {
 	
 	
 
-	public MediaInfo(String mMediaID, String mTitle, String mMediaUrl,
+/*	public MediaInfo(String mMediaID, String mTitle, String mMediaUrl,
 			String mCategoryID, String mLikeCount, String mCommentCount,
 			String mBonusInfo, String mContentInfo, String mDuration,
 			String mediaLinkUrl) {
@@ -65,7 +68,7 @@ public class MediaInfo {
 		this.mContentInfo = mContentInfo;
 		this.mDuration = mDuration;
 		this.mMediaLinkUrl = mediaLinkUrl;
-	}
+	}*/
 
 
 	public MediaInfo(Media media) {
@@ -77,11 +80,13 @@ public class MediaInfo {
 			 
 			if (cr!=null&&cr.getModel()!=null) {
 				this.mCategoryId = cr.getModel().getCategoryId();
+				this.mCategoryName = cr.getModel().getCategoryName();
 			}
 			else{
 				this.mCategoryId = "";
+				this.mCategoryName = "";
 			}
-			
+
 			//core fields 
 			this.mTitle = media.getTitle();
 			this.mSpeaker = media.getSpeaker();
@@ -178,6 +183,12 @@ public class MediaInfo {
 
 	public int getViewCount() {
 		return mViewCount;
+	}
+
+
+
+	public String getCategoryName() {
+		return mCategoryName;
 	}
 
 

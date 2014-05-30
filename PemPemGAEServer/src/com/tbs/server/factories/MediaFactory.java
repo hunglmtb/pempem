@@ -108,9 +108,11 @@ public class MediaFactory extends EntityFactory {
 		//insert or update
 		Date now = new Date();
 		if(media != null){
+			//update
 			media.setModifiedDate(now);
 		}
-		else{
+		else if (mediaFileBlobKey!=null){
+			//insert
 			media = new Media();
 			Key ancestorKey = KeyFactory.createKey("Media", "Media");
 			Key childKey = Datastore.allocateId(ancestorKey, Media.class);
@@ -120,6 +122,7 @@ public class MediaFactory extends EntityFactory {
 			media.setViewCount(0);
 			media.setDuration("4:17");
 		}
+		else return null;
 
 		//set properties for media
 		media.setTitle(title);
@@ -129,13 +132,13 @@ public class MediaFactory extends EntityFactory {
 		/*media.setMediaType(jsonRecipe.getInt(MediaMeta.get().mediaType.getName()));*/
 		media.setMediaType(Common.MEDIA_TYPE_AUDIO);
 
-		//image
-		media.setMediaImageUrl(imageBlobKey);
-		media.setMediaImageThumbUrl(imageBlobKey);
-
 		//media file 
-		media.setMediaFileUrl(mediaFileBlobKey);
-
+		media.setMediaFileUrl(mediaFileBlobKey);				
+		if (mediaFileBlobKey!=null) {
+			//image
+			media.setMediaImageUrl(imageBlobKey);
+			media.setMediaImageThumbUrl(imageBlobKey);				
+		}
 
 		//TODO update later for need to update category and update web client too
 		//check update category
@@ -156,6 +159,8 @@ public class MediaFactory extends EntityFactory {
 		}
 		else return null;
 	}
+	
+	
 	private Media getMedia(String mediaKey) {
 		if (mediaKey!=null&&mediaKey.length()>0) {
 			try {

@@ -40,9 +40,9 @@ public class CategoryController {
 		categories.add(new CategoryRow(CATEGORY_ID_NAME_05, "Truyện ngắn kinh dị",  false, null));
 		categories.add(new CategoryRow(CATEGORY_ID_NAME_06, "Thơ quán",  false, null));
 		*/
-		List<Category> categories = CategoryFactory.getInstance().getCategory();
-		List<RepondCategory> rcs = convertToRespond(categories);
-		return rcs;
+//		List<Category> categories = CategoryFactory.getInstance().getCategory();
+//		List<RepondCategory> rcs = CategoryFactory.getInstance().convertToRespond(categories);
+		return CategoryFactory.getInstance().getCategories();
 	}
 	
 	//for admin web client
@@ -89,17 +89,7 @@ public class CategoryController {
 		return jDropDown;
 	}
 
-	private List<RepondCategory> convertToRespond(List<Category> categories) {
-		if (categories!=null) {
-			List<RepondCategory> rcs = new ArrayList<RepondCategory>();
-			for (Category category : categories) {
-				rcs.add(new RepondCategory(category));
-				
-			}		
-			return rcs;
-		}
-		return null;
-	}
+	
 
 	
 	@RequestMapping(value="/add", params={"categoryid","categoryname"})

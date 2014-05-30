@@ -2,7 +2,6 @@ package com.tbs.server.controller;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import java.util.logging.Logger;
 
 import javax.servlet.http.HttpServletRequest;
@@ -19,8 +18,6 @@ import org.springframework.web.servlet.ModelAndView;
 import com.google.appengine.api.blobstore.BlobKey;
 import com.google.appengine.api.blobstore.BlobstoreService;
 import com.google.appengine.api.blobstore.BlobstoreServiceFactory;
-import com.google.appengine.api.images.ImagesService;
-import com.google.appengine.api.images.ImagesServiceFactory;
 import com.google.appengine.labs.repackaged.org.json.JSONException;
 import com.tbs.server.factories.MediaFactory;
 import com.tbs.server.model.Media;
@@ -70,6 +67,7 @@ public class MediaController {
 			}
 			return mediaInfoList;
 		}
+
 		return null;
 	}
 

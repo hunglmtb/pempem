@@ -1,5 +1,6 @@
 package com.tbs.server.factories;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -11,6 +12,7 @@ import com.google.appengine.api.datastore.KeyFactory;
 import com.google.appengine.api.datastore.Query.FilterOperator;
 import com.tbs.server.meta.CategoryMeta;
 import com.tbs.server.model.Category;
+import com.tbs.server.responder.RepondCategory;
 
 public class CategoryFactory extends EntityFactory {
 
@@ -84,6 +86,27 @@ public class CategoryFactory extends EntityFactory {
 	public void deleteCategory(String categoryKeyString) throws Exception{
 		Key categoryKey = KeyFactory.stringToKey(categoryKeyString);			
 		Datastore.delete(categoryKey);
+	}
+
+	
+
+	public List<RepondCategory> getCategories() {
+		List<Category> categories = CategoryFactory.getInstance().getCategory();
+		List<RepondCategory> rcs = convertToRespond(categories);
+		return rcs;
+	}
+	
+	
+	private List<RepondCategory> convertToRespond(List<Category> categories) {
+		if (categories!=null) {
+			List<RepondCategory> rcs = new ArrayList<RepondCategory>();
+			for (Category category : categories) {
+				rcs.add(new RepondCategory(category));
+				
+			}		
+			return rcs;
+		}
+		return null;
 	}
 }
 

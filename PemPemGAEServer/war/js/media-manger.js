@@ -118,8 +118,7 @@ function createTable(i, max_elem) {
 
 			strRow += "<td class = bntdelete><input type= 'button' id ="
 				+ members[rowIdx].macaddress
-				+ " name='edit' value='edit' class= 'buttonedit' onclick= 'reply_click("
-				+ rowIdx + ")'/>"
+				+ " name='edit' value='edit' class= 'buttonedit' onclick= 'editMedia(\""+ jsonTR.mediaId + "\")'/>"
 
 				+"<input type= 'button' id ="
 				+ members[rowIdx].mediaKeyString
@@ -131,6 +130,27 @@ function createTable(i, max_elem) {
 			var newRow = $(strRow);
 			// Get DOM Table and append new row.
 			$("#contests_table").append(newRow);
+			
+/*			
+			formRow = "<form action="<%=blobstoreService.createUploadUrl("/admin/upload")%>" method="post" enctype="multipart/form-data">
+			
+				<table id="myTable2" class="module-table-body2">
+					<tbody id="contests_table1">
+						<tr class="trtable2listitem">
+							<td id="test1"><input type="text" name="title"></td>
+							<td style="width: 25%"><input type="text" name="content"></td>
+							<td style="width: 6%"><input type="text" name="speaker"></td>
+							<td style="width: 6%"><input type="text" name="author"></td>
+							<td style="width: 6%"><select name="categoryId" id="categorydropdown" onChange=setCategory(this,this.id)></select></td>
+							<td style="width: 12%"><input type="file" name="imageFile"></td>
+							<td style="width: 12%"><input type="file" name="mediaFile"></td>
+							<td style="width: 4%"><input type="submit" value="add"></td>
+						</tr>
+					</tbody>
+				</table>
+			</form>";
+			newRow = $(formRow);
+			$("#contests_table").append(newRow);*/
 		}
 	}else{
 		strRow = "<tr class=new ></tr>";
@@ -186,17 +206,10 @@ function closeInput(elm) {
  * <p>call page edit user.</p>
  * @param rowIdx
  */
-function reply_click(rowIdx) {
-	var url ="/BundleBoxService/webapps/myapp/html/usermanager/edituser.html?macaddress="
-		+ members[rowIdx].macaddress
-		+ "&serial="
-		+ members[rowIdx].serial
-		+ "&date="
-		+ members[rowIdx].date
-		+ "&purchase="
-		+ members[rowIdx].purchase;
-	url=encodeURI(url);
-	window.document.location.href = url;
+function editMedia(mediaId) {
+	//alert("mediaId: "+mediaId);
+	document.getElementById(mediaId).style.display  = 'table-row';
+	//show form and edit id 
 }
 /**
  * <p>call page edit user.</p>

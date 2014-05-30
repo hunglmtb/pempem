@@ -24,6 +24,7 @@ import com.google.appengine.api.images.ImagesService;
 import com.google.appengine.api.images.ImagesServiceFactory;
 import com.tbs.server.factories.MediaFactory;
 import com.tbs.server.model.Media;
+import com.tbs.server.responder.MediaInfo;
 import com.tbs.server.util.Util;
 @Controller
 @RequestMapping("/admin")
@@ -44,7 +45,13 @@ public class AdminController {
 	@RequestMapping("/media")
 	@ResponseBody
 	public ModelAndView showMedia() {
-		return new ModelAndView("media-manager");
+		//List<Media> mediaList = MediaFactory.getInstance().getMedia(0,15,Util.MediaQueryMode.MEDIA_GET_ALL);
+		MediaController mdc = new MediaController();
+		List<MediaInfo> mediaList = mdc .getAll(0, 20);
+
+		ModelAndView model = new ModelAndView("media-manager"); 
+		model.addObject("mediaList",mediaList);
+		return model;
 	}
 
 	//upload file 
@@ -67,31 +74,29 @@ public class AdminController {
 		String mediaKey = req.getParameter("mediaKey");
 		String categoryId = req.getParameter("categoryId");
 
+		String imageBlobKey = null;
+		String mediaFileBlobKey = null;
 		if (imageBlobKeys != null && mediaBlobKeys!=null) {
-			String imageBlobKey = imageBlobKeys.get(0).getKeyString();
-			String mediaFileBlobKey = mediaBlobKeys.get(0).getKeyString();
-
-			Media media = MediaFactory.getInstance().insertOrUpdateMedia(mediaKey,
-					title,
-					content,
-					speaker,
-					author,
-					imageBlobKey,
-					mediaFileBlobKey,
-					categoryId);
-			if (media!=null) {
-				model.addAttribute("result", "success");
-			}
-			else{
-				model.addAttribute("result", "failt when update datastore");
-			}
+			imageBlobKey = imageBlobKeys.get(0).getKeyString();
+			mediaFileBlobKey = mediaBlobKeys.get(0).getKeyString();
+		}
+		Media media = MediaFactory.getInstance().insertOrUpdateMedia(mediaKey,
+				title,
+				content,
+				speaker,
+				author,
+				imageBlobKey,
+				mediaFileBlobKey,
+				categoryId);
+		if (media!=null) {
+			model.addAttribute("result", "success");
 		}
 		else{
-			model.addAttribute("result", "failt when upload");
+			model.addAttribute("result", "failt when update datastore");
 		}
 		return redirect;
 	}
-
+	
 	//serve file 
 	@RequestMapping(value = "serve", method = RequestMethod.GET)
 	@ResponseBody

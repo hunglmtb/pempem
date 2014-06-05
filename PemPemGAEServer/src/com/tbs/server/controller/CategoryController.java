@@ -101,8 +101,8 @@ public class CategoryController {
 		Category category;
 		
 		try {
-			String name = Util.getUtf8String(categoryName);
-			category = CategoryFactory.getInstance().insertOrUpdateCategory(categoryId,name);
+			//String name = Util.getUtf8String(categoryName);
+			category = CategoryFactory.getInstance().insertOrUpdateCategory(categoryId,categoryName);
 			if (category!=null) {
 				return getAllCategories();				
 			}

@@ -60,7 +60,7 @@ public class AdminController {
 	public ModelAndView  upload(HttpServletRequest req,ModelMap model) throws UnsupportedEncodingException {
 
 		ModelAndView  redirect = new ModelAndView("media-manager");
-
+		
 		//get blob key
 		Map<String, List<BlobKey>> blobs = blobstoreService.getUploads(req);
 		List<BlobKey> imageBlobKeys = blobs.get("imageFile");
@@ -72,14 +72,18 @@ public class AdminController {
 		String speaker = Util.getUtf8String(req.getParameter("speaker"));
 		String author = Util.getUtf8String(req.getParameter("author"));
 		String mediaKey = req.getParameter("mediaKey");
-		String categoryId = req.getParameter("categoryId");
+		String categoryId = req.getParameter("categoryId");	
 
 		String imageBlobKey = null;
 		String mediaFileBlobKey = null;
-		if (imageBlobKeys != null && mediaBlobKeys!=null) {
+		if (imageBlobKeys != null ) {
 			imageBlobKey = imageBlobKeys.get(0).getKeyString();
+		}
+		
+		if (mediaBlobKeys!=null) {
 			mediaFileBlobKey = mediaBlobKeys.get(0).getKeyString();
 		}
+		
 		Media media = MediaFactory.getInstance().insertOrUpdateMedia(mediaKey,
 				title,
 				content,
@@ -94,6 +98,11 @@ public class AdminController {
 		else{
 			model.addAttribute("result", "failt when update datastore");
 		}
+		
+		MediaController mdc = new MediaController();
+		List<MediaInfo> mediaList = mdc .getAll(0, 20);
+		redirect.addObject("mediaList",mediaList);
+
 		return redirect;
 	}
 	

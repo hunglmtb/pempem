@@ -206,9 +206,17 @@ function closeInput(elm) {
  * <p>call page edit user.</p>
  * @param rowIdx
  */
-function editMedia(mediaId) {
+function editMedia(mediaId,selected) {
 	//alert("mediaId: "+mediaId);
 	document.getElementById(mediaId).style.display  = 'table-row';
+	document.getElementById("view"+mediaId).style.display  = 'none';
+	document.getElementById("select"+mediaId).value = selected;
+	
+}
+function cancelEditMedia(mediaId) {
+	//alert("mediaId: "+mediaId);
+	document.getElementById(mediaId).style.display  = 'none';
+	document.getElementById("view"+mediaId).style.display  = 'table-row';
 	//show form and edit id 
 }
 /**

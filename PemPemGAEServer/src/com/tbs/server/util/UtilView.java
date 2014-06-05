@@ -19,11 +19,11 @@ public class UtilView {
 
 	public String buildDropDownList(List<Pair<String, String>> list) {
 		
-		String dropDownList = "<select>";
+		String dropDownList = "";
 		for (Pair<String, String> pair : list) {
 			dropDownList += "<option value=\""+pair.getA()+"\">"+pair.getB()+"</option>";
 		}
-		dropDownList += "</select>";
+		//dropDownList += "</select>";
 		return dropDownList ;
 	}
 

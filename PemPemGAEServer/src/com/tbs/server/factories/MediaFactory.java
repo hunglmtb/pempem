@@ -135,9 +135,12 @@ public class MediaFactory extends EntityFactory {
 		media.setMediaType(Common.MEDIA_TYPE_AUDIO);
 
 		//media file 
-		media.setMediaFileUrl(mediaFileBlobKey);				
 		if (mediaFileBlobKey!=null) {
-			//image
+			media.setMediaFileUrl(mediaFileBlobKey);
+		}
+		
+		//image
+		if (imageBlobKey!=null) {
 			media.setMediaImageUrl(imageBlobKey);
 			media.setMediaImageThumbUrl(imageBlobKey);				
 		}

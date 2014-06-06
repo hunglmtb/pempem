@@ -27,4 +27,34 @@ public class UtilView {
 		return dropDownList ;
 	}
 
+	public String buildPaginatorHtml(int aPage, int offset, int slimit, int size) {
+		String prev = null;
+		String next = null;
+		int realPage = aPage;
+		int nextPage = aPage+1;
+		if(aPage <=1){
+			prev = "<span class=\"disabled_tnt_pagination\">Prev</span>";
+			realPage = 1;
+			nextPage = 2;
+		}
+		else{
+			prev = "<span><a href=\"/admin/media/" +(aPage-1)+
+					"\">Prev</a></span>";
+		}
+		
+		if(slimit > size){
+			next = "<span class=\"disabled_tnt_pagination\">Next</span>";
+		}
+		else{
+			next = "<span><a href=\"/admin/media/" +nextPage+
+					"\">Next</a></span>";
+		}
+		
+		String tag = "<div id=\"tnt_pagination\">" +prev +
+				"<span class=\"active_tnt_link\">" + realPage+
+				"</span>" +next +
+				"</div>";
+		return tag;
+	}
+
 }

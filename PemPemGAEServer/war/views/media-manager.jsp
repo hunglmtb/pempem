@@ -22,10 +22,12 @@
 		notificationText = "no mediaList";
 	}
 
-	List<Pair<String, String>> list = CategoryFactory.getInstance()
-			.getCategoryPairList();
-	String dropDownList = UtilView.getInstance()
-			.buildDropDownList(list);
+	List<Pair<String, String>> list = CategoryFactory.getInstance().getCategoryPairList();
+	String dropDownList = UtilView.getInstance().buildDropDownList(list);
+	
+	//paginator 
+	String paginator = (String)request.getAttribute("paginator");
+	
 %>
 
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
@@ -37,36 +39,6 @@
 <script type="text/javascript" src="/js/jquery.pagination.js"></script>
 <script type="text/javascript" src="/js/media-manger.js" charset="UTF-8"></script>
 <link rel="stylesheet" href="/css/styles.css" type="text/css">
-
-<!-- CSS goes in the document HEAD or added to your external stylesheet -->
-<style type="text/css">
-table.gridtable {
-	font-family: verdana,arial,sans-serif;
-	font-size:11px;
-	color:#333333;
-	border-width: 1px;
-	border-color: #666666;
-	border-collapse: collapse;
-}
-table.gridtable th {
-	border-width: 1px;
-	padding: 8px;
-	border-style: solid;
-	border-color: #666666;
-	background-color: #dedede;
-}
-table.gridtable td {
-	border-width: 1px;
-	padding: 8px;
-	border-style: solid;
-	border-color: #666666;
-}
-
-textarea
-  {
-    resize: both;
-  }
-</style>
 </head>
 <body onload='formLoad()'>
 	<button class=buttoninsert onClick="displaymenu()">Back</button>
@@ -74,62 +46,11 @@ textarea
 		<div class="module-table-body">
 		
 <%
-			out.print("<div><p>" + notificationText + "<p/></div>");
 			if (result != null) {
 				out.print("<div><p>add result : " + result.toString()
 						+ "<p/></div>");
 			}
 		%>
-<!-- 			<table id="myTable" class="module-table-body">
-				<thead>
-					<tr>
-						<th style="width: 10%">Media Title</th>
-						<th style="width: 25%">Nội dung</th>
-						<th style="width: 5%">Speaker</th>
-						<th style="width: 5%">Author</th>
-						<th style="width: 10%">Category</th>
-						<th style="width: 10%">Image</th>
-						<th style="width: 6%">Media Link</th>
-						<th style="width: 8%">shared Link</th>
-						<th style="width: 5%">view count</th>
-						<th style="width: 5%">duration</th>
-						<th style="width: 5%">published date</th>
-						<th style="width: 5%">modified date</th>
-					</tr>
-				</thead>
-				<tbody id="contests_table"></tbody>
-			</table> -->
-			<!-- <div class="bottom_content" id="bottom">
-				<div id="Pagination" class="pagination">
-					<form style="display: none">
-						<p>
-							<label for="items_per_page">Number of items per page</label><input
-								type="text" value="30" name="items_per_page" id="items_per_page"
-								class="numeric" />
-						</p>
-						<p>
-							<label for="num_display_entries">Number of pagination
-								links shown</label><input type="text" value="5"
-								name="num_display_entries" id="num_display_entries"
-								class="numeric" />
-						</p>
-						<p>
-							<label for="num">Number of start and end points</label><input
-								type="text" value="2" name="num_edge_entries"
-								id="num_edge_entries" class="numeric" />
-						</p>
-						<p>
-							<label for="prev_text">"Previous" label</label><input type="text"
-								value="Prev" name="prev_text" id="prev_text" />
-						</p>
-						<p>
-							<label for="next_text">"Next" label</label><input type="text"
-								value="Next" name="next_text" id="next_text" />
-						</p>
-						<input type="button" id="setoptions" value="Set options" />
-					</form>
-				</div>
-			</div> -->
 			
 <table id="myTable" class="gridtable">
     <thead>
@@ -185,29 +106,11 @@ textarea
 			<td><button onClick="cancelEditMedia('<%=mediaInfo.getMediaId()%>')">cancel</button></td>
 	</tr>
 
-
-
-
-				<%-- <table id="myTable2" class="module-table-body2">
-				
-				<tbody id="contests_table1">
-					<tr class="trtable2listitem">
-						<td id="test1"><input type="text" name="title" value="<%=mediaInfo.getTitle()%>" ></td>
-						<td style="width: 25%"><input type="text" name="content" value="<%=mediaInfo.getContentInfo()%>"></td>
-						<td style="width: 6%"><input type="text" name="speaker" value="<%=mediaInfo.getSpeaker()%>"></td>
-						<td style="width: 6%"><input type="text" name="author" value="<%=mediaInfo.getAuthor()%>"></td>
-						<td style="width: 6%"><select name="categoryId" id="categorydropdown" onChange=setCategory(this,this.id)></select></td>
-						<td style="width: 12%"><input type="file" name="imageFile"></td>
-						<td style="width: 12%"><input type="file" name="mediaFile"></td>
-						<td style="width: 4%"><input type="submit" value="add"></td>
-					</tr>
-				</tbody>
-			</table> --%>
-		
-	
 <%
-				}
-			%>		
+	}
+%>
+			
+<tr style="background-color: #DD22EE;"><%=paginator%></tr>	
 	<tr style="background-color: #DDA0DD;">
 		<form
 			action="<%=blobstoreService.createUploadUrl("/admin/upload")%>"
@@ -224,9 +127,10 @@ textarea
 	</tr>	
 </table>
 
-</div>
 <!-- End .module-table-body -->
 </div>
+
+
 <!-- End .module -->
 <!-- <div>
 		

@@ -13,7 +13,7 @@ import com.google.appengine.api.datastore.Query.FilterOperator;
 import com.google.gwt.rpc.server.Pair;
 import com.tbs.server.meta.CategoryMeta;
 import com.tbs.server.model.Category;
-import com.tbs.server.responder.RepondCategory;
+import com.tbs.server.responder.CategoryInfo;
 
 public class CategoryFactory extends EntityFactory {
 
@@ -91,18 +91,18 @@ public class CategoryFactory extends EntityFactory {
 
 	
 
-	public List<RepondCategory> getCategories() {
+	public List<CategoryInfo> getCategories() {
 		List<Category> categories = CategoryFactory.getInstance().getCategory();
-		List<RepondCategory> rcs = convertToRespond(categories);
+		List<CategoryInfo> rcs = convertToRespond(categories);
 		return rcs;
 	}
 	
 	
-	private List<RepondCategory> convertToRespond(List<Category> categories) {
+	private List<CategoryInfo> convertToRespond(List<Category> categories) {
 		if (categories!=null) {
-			List<RepondCategory> rcs = new ArrayList<RepondCategory>();
+			List<CategoryInfo> rcs = new ArrayList<CategoryInfo>();
 			for (Category category : categories) {
-				rcs.add(new RepondCategory(category));
+				rcs.add(new CategoryInfo(category));
 				
 			}		
 			return rcs;

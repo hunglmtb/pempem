@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.tbs.server.factories.CategoryFactory;
 import com.tbs.server.model.Category;
-import com.tbs.server.responder.RepondCategory;
+import com.tbs.server.responder.CategoryInfo;
 import com.tbs.server.responder.RespondNotification;
 import com.tbs.server.util.Util;
 
@@ -23,7 +23,7 @@ public class CategoryController {
 
 	@RequestMapping("/get")
 	@ResponseBody
-	public List<RepondCategory> getCategories() {
+	public List<CategoryInfo> getCategories() {
 		/*List<CategoryRow> categories = new ArrayList<CategoryRow>();
 		categories.add(new CategoryRow(CATEGORY_ID_HEADER, "YOU",false, null));
 		categories.add(new CategoryRow(CATEGORY_ID_HISTORY, "History", false, null));
@@ -50,7 +50,7 @@ public class CategoryController {
 	@ResponseBody
 	public RespondNotification getAllCategories() {
 		
-		List<RepondCategory> rcs = getCategories();
+		List<CategoryInfo> rcs = getCategories();
 		RespondNotification respond = null;
 		if (rcs!=null) {
 			respond = new RespondNotification(Util.RESPOND_SUCCESS_CODE, "OK", rcs);			
@@ -66,7 +66,7 @@ public class CategoryController {
 		@ResponseBody
 		public RespondNotification getCategoryDropDown() {
 			
-			List<RepondCategory> rcs = getCategories();
+			List<CategoryInfo> rcs = getCategories();
 			RespondNotification respond = null;
 			if (rcs!=null) {
 				String dropDown = convertCategoriesToDropDownList(rcs);
@@ -79,9 +79,9 @@ public class CategoryController {
 		}
 	
 	
-	private String convertCategoriesToDropDownList(List<RepondCategory> rcs) {
+	private String convertCategoriesToDropDownList(List<CategoryInfo> rcs) {
 		String jDropDown = "{";
-		for (RepondCategory repondCategory : rcs) {
+		for (CategoryInfo repondCategory : rcs) {
 			jDropDown += "\""+repondCategory.getCategoryId()+"\":\""+repondCategory.getCategoryName()+"\",";
 			
 		}

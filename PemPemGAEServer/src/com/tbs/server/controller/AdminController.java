@@ -11,6 +11,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -24,33 +25,48 @@ import com.google.appengine.api.images.ImagesService;
 import com.google.appengine.api.images.ImagesServiceFactory;
 import com.tbs.server.factories.MediaFactory;
 import com.tbs.server.model.Media;
+import com.tbs.server.responder.CategoryInfo;
 import com.tbs.server.responder.MediaInfo;
 import com.tbs.server.util.Util;
+import com.tbs.server.util.UtilView;
 @Controller
 @RequestMapping("/admin")
 public class AdminController {
-
+	
+	private static final int sLimit = 3;
 	private BlobstoreService blobstoreService = BlobstoreServiceFactory.getBlobstoreService();
     private ImagesService imagesService = ImagesServiceFactory.getImagesService();
 
 
 	//manage category
-	@RequestMapping("/category")
+	@RequestMapping(value={"/category","/categories"})
 	@ResponseBody
 	public ModelAndView showCategory() {
-		return new ModelAndView("category-manager");
+		CategoryController cdc = new CategoryController();
+		List<CategoryInfo> categoryList = cdc.getCategories();
+		ModelAndView model = new ModelAndView("category-manager2"); 
+		model.addObject("categoryList",categoryList);
+		
+		return model;
 	}
-
+	
+	
 	//media administrator
-	@RequestMapping("/media")
+	@RequestMapping(value={"/medias","/media/{aPage}"},method = RequestMethod.GET)
 	@ResponseBody
-	public ModelAndView showMedia() {
+	public ModelAndView showMedia(@PathVariable int aPage) {
 		//List<Media> mediaList = MediaFactory.getInstance().getMedia(0,15,Util.MediaQueryMode.MEDIA_GET_ALL);
 		MediaController mdc = new MediaController();
-		List<MediaInfo> mediaList = mdc .getAll(0, 20);
+		int page = aPage -1;
+		int offset = page<=0?0:page*sLimit;
+		List<MediaInfo> mediaList = mdc.getAll(offset,sLimit);
 
 		ModelAndView model = new ModelAndView("media-manager"); 
 		model.addObject("mediaList",mediaList);
+		model.getModelMap().addAttribute("page", page );
+		int size = mediaList.size();
+		String paginator = UtilView.getInstance().buildPaginatorHtml(aPage,offset,sLimit,size);
+		model.getModelMap().addAttribute("paginator", paginator);
 		return model;
 	}
 

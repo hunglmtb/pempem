@@ -28,13 +28,14 @@
 	//paginator 
 	String paginator = (String)request.getAttribute("paginator");
 	
+	Object mPage = request.getAttribute("page");
 %>
 
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
 <meta http-equiv="content-type" content="text/html; charset=utf-8" />
-<title>Category Manager</title>
+<title>Media Manager</title>
 <script type="text/javascript" src="/js/jquery-1.7.2.min.js"></script>
 <script type="text/javascript" src="/js/jquery.pagination.js"></script>
 <script type="text/javascript" src="/js/media-manger.js" charset="UTF-8"></script>
@@ -50,6 +51,9 @@
 				out.print("<div><p>add result : " + result.toString()
 						+ "<p/></div>");
 			}
+			
+			//out.print("<div><p>add result : " + mPage+ "<p/></div>");;
+
 		%>
 			
 <table id="myTable" class="gridtable">
@@ -115,6 +119,8 @@
 		<form
 			action="<%=blobstoreService.createUploadUrl("/admin/upload")%>"
 			method="post" enctype="multipart/form-data">
+			
+			<input type="text" name="page" value="<%=mPage%>" hiden>
 		<td><textarea name="title" wrap="virtual"></textarea><br/><input type="file" name="mediaFile"></td>
 		<td><textarea name="content" rows="6" cols="45" wrap="virtual"></textarea></td>
 		<td><textarea name="speaker" wrap="virtual"></textarea></td>

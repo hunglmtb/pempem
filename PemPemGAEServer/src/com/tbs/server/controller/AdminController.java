@@ -10,7 +10,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -63,7 +62,7 @@ public class AdminController {
 
 		ModelAndView model = new ModelAndView("media-manager"); 
 		model.addObject("mediaList",mediaList);
-		model.getModelMap().addAttribute("page", page );
+		model.getModelMap().addAttribute("page", aPage );
 		int size = mediaList.size();
 		String paginator = UtilView.getInstance().buildPaginatorHtml(aPage,offset,sLimit,size);
 		model.getModelMap().addAttribute("paginator", paginator);
@@ -73,9 +72,8 @@ public class AdminController {
 	//upload file 
 	@RequestMapping(value = "/upload", method = RequestMethod.POST)
 	@ResponseBody
-	public ModelAndView  upload(HttpServletRequest req,ModelMap model) throws UnsupportedEncodingException {
+	public ModelAndView  upload(HttpServletRequest req) throws UnsupportedEncodingException {
 
-		ModelAndView  redirect = new ModelAndView("media-manager");
 		
 		//get blob key
 		Map<String, List<BlobKey>> blobs = blobstoreService.getUploads(req);
@@ -89,6 +87,7 @@ public class AdminController {
 		String author = Util.getUtf8String(req.getParameter("author"));
 		String mediaKey = req.getParameter("mediaKey");
 		String categoryId = req.getParameter("categoryId");	
+		int page = Integer.valueOf(req.getParameter("page"));
 
 		String imageBlobKey = null;
 		String mediaFileBlobKey = null;
@@ -108,18 +107,15 @@ public class AdminController {
 				imageBlobKey,
 				mediaFileBlobKey,
 				categoryId);
+		
+		ModelAndView model = showMedia(page);
 		if (media!=null) {
-			model.addAttribute("result", "success");
+			model.getModelMap().addAttribute("result", "success");
 		}
 		else{
-			model.addAttribute("result", "failt when update datastore");
+			model.getModelMap().addAttribute("result", "failt when update datastore");
 		}
-		
-		MediaController mdc = new MediaController();
-		List<MediaInfo> mediaList = mdc .getAll(0, 20);
-		redirect.addObject("mediaList",mediaList);
-
-		return redirect;
+		return model;
 	}
 	
 	//serve file 

@@ -73,7 +73,7 @@
 	</tr>
 	
 	<tr id="<%=categoryInfo.getCategoryKeyString()%>" style="background-color: #9370D8;" hidden>
-		<form action="<%=blobstoreService.createUploadUrl("/admin/upload")%>" method="post" enctype="multipart/form-data">
+		<form action="/category/add" method="get">
 			<td><textarea name="categoryid" wrap="virtual"><%=categoryInfo.getCategoryId()%></textarea></td>
 			<td><textarea name="categoryname" rows="8" cols="48" wrap="virtual"><%=categoryInfo.getCategoryName()%></textarea></td>
 			<td><input type="submit" value="done"></td>
@@ -88,7 +88,7 @@
 <tr style="background-color: #DD22EE;"><%=paginator%></tr>	
 	<tr style="background-color: #DDA0DD;">
 		<form action="/category/add" method="get">
-		<td><textarea name="categoryid" wrap="virtual"></textarea><br/><input type="file" name="mediaFile"></td>
+		<td><textarea name="categoryid" wrap="virtual"></textarea></td>
 		<td><textarea name="categoryname" rows="2" cols="16" wrap="virtual"></textarea></td>
 		<td><input type="submit" value="add"></td>
 		</form>

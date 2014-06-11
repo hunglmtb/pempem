@@ -101,8 +101,9 @@ public class MediaInfo {
 			this.mPublishedDate = media.getPublishedDate().toString();
 			this.mViewCount = media.getViewCount();
 			this.mMediaType = media.getMediaType();
-			this.mMediaImageThumbUrl = media.getMediaImageThumbUrl();
-			BlobKey imageKey = new BlobKey(media.getMediaImageUrl());
+			BlobKey imageKey = new BlobKey(media.getMediaImageThumbUrl());
+			this.mMediaImageThumbUrl = imagesService.getServingUrl(imageKey);
+			imageKey = new BlobKey(media.getMediaImageUrl());
 			this.mMediaImageUrl = imagesService.getServingUrl(imageKey);
 			this.mMediaImageUrl = this.mMediaImageUrl.replaceFirst("0.0.0.0", HOST_NAME);
 		}

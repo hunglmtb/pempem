@@ -25,6 +25,8 @@ import com.google.appengine.api.files.AppEngineFile;
 import com.google.appengine.api.files.FileService;
 import com.google.appengine.api.files.FileServiceFactory;
 import com.google.appengine.api.files.FileWriteChannel;
+import com.google.appengine.api.utils.SystemProperty;
+import com.google.appengine.api.utils.SystemProperty.Environment.Value;
 import com.google.appengine.labs.repackaged.org.json.JSONObject;
 
 @SuppressWarnings("deprecation")
@@ -275,6 +277,10 @@ public class Util {
 	}
 
 	public static String getUtf8String(String content) {
+		Value runtime = SystemProperty.environment.value();
+		String name = runtime.name();
+		if (name.equals("Production")) return content;
+		
 		String result = content;
 		try {
 			byte[] bytes;

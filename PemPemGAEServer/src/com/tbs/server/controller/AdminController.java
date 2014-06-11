@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.view.RedirectView;
 
+import com.google.appengine.api.blobstore.BlobInfo;
 import com.google.appengine.api.blobstore.BlobKey;
 import com.google.appengine.api.blobstore.BlobstoreService;
 import com.google.appengine.api.blobstore.BlobstoreServiceFactory;
@@ -77,9 +78,14 @@ public class AdminController {
 		
 		//get blob key
 		Map<String, List<BlobKey>> blobs = blobstoreService.getUploads(req);
-		List<BlobKey> imageBlobKeys = blobs.get("imageFile");
+		Map<String, List<BlobInfo>> infos = blobstoreService.getBlobInfos(req);
+		List<BlobInfo> imageInfo = infos.get("imageFile");
+		List<BlobInfo> mediaFileInfo = infos.get("mediaFile");
+		
+		
+		/*List<BlobKey> imageBlobKeys = blobs.get("imageFile");
 		List<BlobKey> mediaBlobKeys = blobs.get("mediaFile");
-
+*/
 		//get text fields
 		String title =  Util.getUtf8String(req.getParameter("title"));
 		String content = Util.getUtf8String(req.getParameter("content"));
@@ -87,17 +93,39 @@ public class AdminController {
 		String author = Util.getUtf8String(req.getParameter("author"));
 		String mediaKey = req.getParameter("mediaKey");
 		String categoryId = req.getParameter("categoryId");	
-		int page = Integer.valueOf(req.getParameter("page"));
+		int page = 1;
+		try {
+			String aPage = req.getParameter("page");
+			page = Integer.valueOf(aPage);
+			
+		} catch (Exception e) {
+			// TODO: handle exception
+		}
 
 		String imageBlobKey = null;
 		String mediaFileBlobKey = null;
-		if (imageBlobKeys != null ) {
+		/*if (imageBlobKeys != null && imageBlobKeys.size()>0 ) {
 			imageBlobKey = imageBlobKeys.get(0).getKeyString();
+		}*/
+		
+		if (imageInfo != null && imageInfo.size()>0 ) {
+			BlobInfo image = imageInfo.get(0);
+			if(image!=null&&image.getSize()>0&&image.getContentType()!=null){
+				imageBlobKey = image.getBlobKey().getKeyString();
+			}
+		}
+
+		if (mediaFileInfo != null && mediaFileInfo.size()>0 ) {
+			BlobInfo mediaFile = mediaFileInfo.get(0);
+			if(mediaFile!=null&&mediaFile.getSize()>0&&mediaFile.getContentType()!=null){
+				mediaFileBlobKey = mediaFile.getBlobKey().getKeyString();
+			}
 		}
 		
-		if (mediaBlobKeys!=null) {
+		/*
+		if (mediaBlobKeys!=null&& mediaBlobKeys.size()>0) {
 			mediaFileBlobKey = mediaBlobKeys.get(0).getKeyString();
-		}
+		}*/
 		
 		Media media = MediaFactory.getInstance().insertOrUpdateMedia(mediaKey,
 				title,

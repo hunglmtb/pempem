@@ -93,7 +93,8 @@
 	
 	<tr id="<%=mediaInfo.getMediaId()%>" style="background-color: #9370D8;" hidden>
 		<form action="<%=blobstoreService.createUploadUrl("/admin/upload")%>" method="post" enctype="multipart/form-data">
-			<input type="text" name="mediaKey" value="<%=mediaInfo.getMediaId()%>" hidden>
+			<input type="text" name="mediaKey" value="<%=mediaInfo.getMediaId()%>" hidden/>
+			<input type="text" name="page" value="<%=mPage%>" style="display: none;"/>
 			<td><textarea name="title" wrap="virtual"><%=mediaInfo.getTitle()%></textarea><br/><input type="file" name="mediaFile"></td>
 			<td><textarea name="content" rows="8" cols="48" wrap="virtual"><%=mediaInfo.getContentInfo()%></textarea></td>
 			<td><textarea name="speaker" wrap="virtual"><%=mediaInfo.getSpeaker()%></textarea></td>
@@ -120,7 +121,7 @@
 			action="<%=blobstoreService.createUploadUrl("/admin/upload")%>"
 			method="post" enctype="multipart/form-data">
 			
-			<input type="text" name="page" value="<%=mPage%>" hiden>
+			<input type="text" name="page" value="<%=mPage%>" style="display: none;"/>
 		<td><textarea name="title" wrap="virtual"></textarea><br/><input type="file" name="mediaFile"></td>
 		<td><textarea name="content" rows="6" cols="45" wrap="virtual"></textarea></td>
 		<td><textarea name="speaker" wrap="virtual"></textarea></td>

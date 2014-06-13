@@ -235,4 +235,19 @@ public class MediaController {
 		}
 		return redirect;
 	}
+	
+	
+	//facebook
+	@RequestMapping(value="/social", params={"mediaId"})
+	@ResponseBody
+	public ModelAndView social(@RequestParam("mediaId") String aMediaId , ModelMap model) throws IOException {
+		ModelAndView  redirect = new ModelAndView("commentplugin");
+		String mediaUrl = "";
+		//TODO update when update domain
+		if (aMediaId!=null) {
+			mediaUrl = "kcdkv2.appspot.com/media/"+aMediaId;
+		}
+		model.addAttribute("mediaUrl", mediaUrl);
+		return redirect;
+	}
 }

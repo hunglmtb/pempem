@@ -15,7 +15,7 @@
 <title>description</title>
 </head>
 
-<body>
+<body style="margin: 0px;">
 
 	<div id="fb-root"></div>
 	<script>

@@ -1,5 +1,6 @@
 package com.tbs.server.controller;
 import java.io.IOException;
+import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
@@ -237,17 +238,28 @@ public class MediaController {
 	}
 	
 	
-	//facebook
+	//comment facebook
 	@RequestMapping(value="/social", params={"mediaId"})
 	@ResponseBody
 	public ModelAndView social(@RequestParam("mediaId") String aMediaId , ModelMap model) throws IOException {
 		ModelAndView  redirect = new ModelAndView("commentplugin");
 		String mediaUrl = "";
+		String encodedMediaUrl = "";
 		//TODO update when update domain
 		if (aMediaId!=null) {
 			mediaUrl = "kcdkv2.appspot.com/media/"+aMediaId;
+			encodedMediaUrl = URLEncoder.encode(mediaUrl);
 		}
 		model.addAttribute("mediaUrl", mediaUrl);
+		model.addAttribute("encodedMediaUrl", encodedMediaUrl);
 		return redirect;
 	}
+	
+	//login plugin facebook
+		@RequestMapping(value="/authenticate")
+		@ResponseBody
+		public ModelAndView authenticate(ModelMap model) throws IOException {
+			ModelAndView  redirect = new ModelAndView("loginplugin");
+			return redirect;
+		}
 }

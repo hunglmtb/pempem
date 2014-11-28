@@ -71,6 +71,26 @@ public class MediaController {
 
 		return null;
 	}
+	
+	//for client smart phone
+		@RequestMapping(value="/category",params={"category","offset","limit"})
+		@ResponseBody
+		public List<MediaInfo> getMediaByCategory(
+				@RequestParam("category") String category,
+				@RequestParam("offset") int offset,
+				@RequestParam("limit") int limit) {
+
+			List<Media> mediaList = MediaFactory.getInstance().getMedia(offset,limit,Util.MediaQueryMode.MEDIA_GET_ALL);
+			if (mediaList!=null) {
+				List<MediaInfo> mediaInfoList = new ArrayList<MediaInfo>();
+				for (Media media : mediaList) {
+					mediaInfoList.add(new MediaInfo(media));
+				}
+				return mediaInfoList;
+			}
+
+			return null;
+		}
 
 	@RequestMapping(value="/new", params={"offset","limit"})
 	@ResponseBody
@@ -85,16 +105,6 @@ public class MediaController {
 	@ResponseBody
 	public List<CategoryRow> getNewsfeed(
 			@RequestParam("userid") String userid,
-			@RequestParam("offset") int offset,
-			@RequestParam("limit") String limit) {
-
-		return null;
-	}
-
-	@RequestMapping(value="/bycategory", params={"categogyid","offset","limit"})
-	@ResponseBody
-	public List<CategoryRow> getMediaByCategory(
-			@RequestParam("categogyid") String categogyid,
 			@RequestParam("offset") int offset,
 			@RequestParam("limit") String limit) {
 

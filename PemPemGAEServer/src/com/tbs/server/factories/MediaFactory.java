@@ -5,9 +5,12 @@ import java.util.List;
 
 import org.slim3.datastore.Datastore;
 import org.slim3.datastore.ModelQuery;
+import org.slim3.datastore.ModelRef;
+import org.slim3.datastore.ModelRefAttributeMeta;
 
 import com.google.appengine.api.datastore.Key;
 import com.google.appengine.api.datastore.KeyFactory;
+import com.google.appengine.api.datastore.Query.FilterOperator;
 import com.google.appengine.labs.repackaged.org.json.JSONException;
 import com.google.appengine.labs.repackaged.org.json.JSONObject;
 import com.tbs.server.meta.CategoryMeta;
@@ -187,13 +190,34 @@ public class MediaFactory extends EntityFactory {
 
 	}
 
-	public List<Media> getMedia(int offset, int limit, MediaQueryMode mode) {
+	public List<Media> getMedia(int offset, int limit, MediaQueryMode mode, String categoryString) {
 
 		switch (mode) {
 		case MEDIA_GET_ALL:
-			Key ancestorKey = KeyFactory.createKey("Media", "Media");
 			List<Media> lMedia = null;
+			//Key ancestorKey = KeyFactory.createKey("Media", "Media");
+			
+			MediaMeta  mm  =  new  MediaMeta (); 
+			 ModelRefAttributeMeta<Media, ModelRef<Category>, Category> categoryRef = mm.categoryRef;
+
+			Key categoryStringKey = KeyFactory.stringToKey(categoryString);
+			ModelQuery<Media> mediaQuery =  Datastore.query(Media.class).filter(categoryRef.equal(categoryStringKey));
+
+		    
+			/*List<Media> lMedia = null;
 			ModelQuery<Media> mediaQuery  = Datastore.query(Media.class,ancestorKey);
+			
+			MediaMeta e = MediaMeta.get();
+			model =
+		            Datastore.query(e).filter (
+		                e.categoryRef,
+		                FilterOperator.EQUAL,
+		                categoryString ) .asList ();
+			CategoryMeta cm = CategoryMeta.get();
+			List<Media> list = Datastore.query(e)
+			    .filter(e.categoryRef.("Smith"), e.hireDate.greaterThan(hireDate))
+			    .asList();
+			*/
 			mediaQuery.limit(limit);
 			mediaQuery.offset(offset);
 			

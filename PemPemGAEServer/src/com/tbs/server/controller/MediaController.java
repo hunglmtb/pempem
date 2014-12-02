@@ -60,7 +60,7 @@ public class MediaController {
 			@RequestParam("offset") int offset,
 			@RequestParam("limit") int limit) {
 
-		List<Media> mediaList = MediaFactory.getInstance().getMedia(offset,limit,Util.MediaQueryMode.MEDIA_GET_ALL);
+		List<Media> mediaList = MediaFactory.getInstance().getMedia(offset,limit,Util.MediaQueryMode.MEDIA_GET_ALL,null);
 		if (mediaList!=null) {
 			List<MediaInfo> mediaInfoList = new ArrayList<MediaInfo>();
 			for (Media media : mediaList) {
@@ -76,11 +76,11 @@ public class MediaController {
 		@RequestMapping(value="/category",params={"category","offset","limit"})
 		@ResponseBody
 		public List<MediaInfo> getMediaByCategory(
-				@RequestParam("category") String category,
+				@RequestParam("category") String categoryString,
 				@RequestParam("offset") int offset,
 				@RequestParam("limit") int limit) {
 
-			List<Media> mediaList = MediaFactory.getInstance().getMedia(offset,limit,Util.MediaQueryMode.MEDIA_GET_ALL);
+			List<Media> mediaList = MediaFactory.getInstance().getMedia(offset,limit,Util.MediaQueryMode.MEDIA_GET_ALL,categoryString);
 			if (mediaList!=null) {
 				List<MediaInfo> mediaInfoList = new ArrayList<MediaInfo>();
 				for (Media media : mediaList) {

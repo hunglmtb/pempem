@@ -195,29 +195,18 @@ public class MediaFactory extends EntityFactory {
 		switch (mode) {
 		case MEDIA_GET_ALL:
 			List<Media> lMedia = null;
-			//Key ancestorKey = KeyFactory.createKey("Media", "Media");
-			
-			MediaMeta  mm  =  new  MediaMeta (); 
-			 ModelRefAttributeMeta<Media, ModelRef<Category>, Category> categoryRef = mm.categoryRef;
+			ModelQuery<Media> mediaQuery = null;
+			if (categoryString!=null) {
+				MediaMeta  mm  =  new  MediaMeta (); 
+				ModelRefAttributeMeta<Media, ModelRef<Category>, Category> categoryRef = mm.categoryRef;
+				Key categoryStringKey = KeyFactory.stringToKey(categoryString);
+				mediaQuery =  Datastore.query(Media.class).filter(categoryRef.equal(categoryStringKey));
+			}
+			else{
+				Key ancestorKey = KeyFactory.createKey("Media", "Media");
+				mediaQuery  = Datastore.query(Media.class,ancestorKey);
+			}
 
-			Key categoryStringKey = KeyFactory.stringToKey(categoryString);
-			ModelQuery<Media> mediaQuery =  Datastore.query(Media.class).filter(categoryRef.equal(categoryStringKey));
-
-		    
-			/*List<Media> lMedia = null;
-			ModelQuery<Media> mediaQuery  = Datastore.query(Media.class,ancestorKey);
-			
-			MediaMeta e = MediaMeta.get();
-			model =
-		            Datastore.query(e).filter (
-		                e.categoryRef,
-		                FilterOperator.EQUAL,
-		                categoryString ) .asList ();
-			CategoryMeta cm = CategoryMeta.get();
-			List<Media> list = Datastore.query(e)
-			    .filter(e.categoryRef.("Smith"), e.hireDate.greaterThan(hireDate))
-			    .asList();
-			*/
 			mediaQuery.limit(limit);
 			mediaQuery.offset(offset);
 			

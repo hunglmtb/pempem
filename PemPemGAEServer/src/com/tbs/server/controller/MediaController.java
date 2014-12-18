@@ -8,6 +8,7 @@ import java.util.logging.Logger;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.io.IOUtils;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -17,8 +18,10 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.google.appengine.api.blobstore.BlobKey;
+import com.google.appengine.api.blobstore.BlobstoreInputStream;
 import com.google.appengine.api.blobstore.BlobstoreService;
 import com.google.appengine.api.blobstore.BlobstoreServiceFactory;
+import com.google.appengine.api.blobstore.ByteRange;
 import com.google.appengine.labs.repackaged.org.json.JSONException;
 import com.tbs.server.factories.MediaFactory;
 import com.tbs.server.model.Media;
@@ -232,8 +235,24 @@ public class MediaController {
 	@ResponseBody
 	public void serveMedia(@RequestParam("key") String key,HttpServletResponse res) throws IOException {
 		if (key!=null) {
+			// Build response headers
+			res.setContentType("audio/mpeg");
+			//res.setContentLength(7654321);
 			BlobKey blobKey = new BlobKey(key);
-			blobstoreService.serve(blobKey, res);
+			//BlobstoreInputStream in = new BlobstoreInputStream(blobKey); 
+			//blobstoreService.serve(blobKey, res);
+			
+			
+			try {
+				// get your file as InputStream
+				BlobstoreInputStream is = new BlobstoreInputStream(blobKey); 
+				// copy it to response's OutputStream
+				IOUtils.copy(is, res.getOutputStream());
+				res.flushBuffer();
+			} catch (IOException ex) {
+				//log.info("Error writing file to output stream. Filename was '{}'", fileName, ex);
+				throw new RuntimeException("IOError writing file to output stream");
+			}
 		}
 	}
 	

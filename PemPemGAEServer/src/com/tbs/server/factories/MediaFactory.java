@@ -10,7 +10,6 @@ import org.slim3.datastore.ModelRefAttributeMeta;
 
 import com.google.appengine.api.datastore.Key;
 import com.google.appengine.api.datastore.KeyFactory;
-import com.google.appengine.api.datastore.Query.FilterOperator;
 import com.google.appengine.labs.repackaged.org.json.JSONException;
 import com.google.appengine.labs.repackaged.org.json.JSONObject;
 import com.tbs.server.meta.CategoryMeta;
@@ -56,7 +55,7 @@ public class MediaFactory extends EntityFactory {
 			media.setPublishedDate(now);
 			media.setPublishedDate(now);
 			media.setViewCount(0);
-			media.setDuration("4:17");
+			//media.setDuration("4:17");
 		}
 
 		//set properties for media
@@ -64,6 +63,7 @@ public class MediaFactory extends EntityFactory {
 		media.setContentInfo(jsonRecipe.getString(MediaMeta.get().contentInfo.getName()));
 		media.setAuthor(jsonRecipe.getString(MediaMeta.get().author.getName()));
 		media.setSpeaker(jsonRecipe.getString(MediaMeta.get().speaker.getName()));
+		media.setDuration(jsonRecipe.getString(MediaMeta.get().duration.getName()));
 		/*media.setMediaType(jsonRecipe.getInt(MediaMeta.get().mediaType.getName()));*/
 		media.setMediaType(Common.MEDIA_TYPE_AUDIO);
 
@@ -103,7 +103,7 @@ public class MediaFactory extends EntityFactory {
 									String author,
 									String imageBlobKey,
 									String mediaFileBlobKey,
-									String categoryId){
+									String categoryId, String duration){
 
 
 		Media media = getMedia(mediaKey);
@@ -123,7 +123,6 @@ public class MediaFactory extends EntityFactory {
 			media.setPublishedDate(now);
 			media.setPublishedDate(now);
 			media.setViewCount(0);
-			media.setDuration("4:17");
 		}
 		else return null;
 
@@ -132,6 +131,7 @@ public class MediaFactory extends EntityFactory {
 		media.setContentInfo(content);
 		media.setAuthor(author);
 		media.setSpeaker(speaker);
+		media.setDuration(duration!=null&&duration.length()>0?duration:"-:-");
 		/*media.setMediaType(jsonRecipe.getInt(MediaMeta.get().mediaType.getName()));*/
 		media.setMediaType(Common.MEDIA_TYPE_AUDIO);
 

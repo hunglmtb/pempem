@@ -38,7 +38,62 @@
 <title>Media Manager</title>
 <script type="text/javascript" src="/js/jquery-1.7.2.min.js"></script>
 <script type="text/javascript" src="/js/jquery.pagination.js"></script>
+<script type="text/javascript" src="/js/moment-with-locales.js"></script>
 <script type="text/javascript" src="/js/media-manger.js" charset="UTF-8"></script>
+<script type="text/javascript">//<![CDATA[ 
+                                          
+function addFunction(i) {
+	var objectUrl;
+	$("#mediaFile"+i).change(function(e){
+	    var file = e.currentTarget.files[0];
+	   
+	    $("#filename"+i).text(file.name);
+	    $("#filetype"+i).text(file.type);
+	    $("#filesize"+i).text(file.size);
+	    
+	    objectUrl = URL.createObjectURL(file);
+	    $("#audio"+i).prop("src", objectUrl);
+	});
+	
+	var after = '<div><p>Select a .mp3 file</p><audio id="audio'+i+'"></audio>'+
+				'<p><label>File Name:</label> <span id="filename'+i+'"></span></p>'+
+				'<p><label>File Size:</label> <span id="filesize'+i+'"></span></p>'+
+				'<p><label>Song Duration:</label> <span id="duration'+i+'"></span></p></div>';
+	$(after).insertAfter("#mediaFile"+i);
+	
+	$("#audio"+i).on("canplaythrough", function(e){
+	    var seconds = e.currentTarget.duration;
+	    var duration = moment.duration(seconds, "seconds");
+	    
+	    var time = "";
+	    var hours = duration.hours();
+	    if (hours > 0) { time = hours + ":" ; }
+	    
+	    time = time + duration.minutes() + ":" + duration.seconds();
+	    $("#duration"+i).text(time);
+	    //$("#inputduration"+i).val(time);
+	    //$("#duration").val(time);
+	    $( "input[name='duration']" ).each(function(j) {
+	    	if(i==j){
+			    $(this).val(time);
+	    	}
+		});
+	    
+	    URL.revokeObjectURL(objectUrl);
+	});
+
+}
+
+$(function(){
+	$( "input[name='mediaFile']" ).each(function(i) {
+	    $(this).attr('id', "mediaFile"+i);
+	    addFunction(i);
+	    // You can also add more code here if you wish to manipulate each IMG element further
+	});
+});//]]>  
+
+</script>
+
 <link rel="stylesheet" href="/css/styles.css" type="text/css">
 </head>
 <body onload='formLoad()'>
@@ -74,6 +129,7 @@
 	</thead>
   
 <%
+	int index = 0;
   	for (MediaInfo mediaInfo : mediaList) {
   %>
 	<tr id="view<%=mediaInfo.getMediaId()%>">
@@ -95,6 +151,7 @@
 		<form action="<%=blobstoreService.createUploadUrl("/admin/upload")%>" method="post" enctype="multipart/form-data">
 			<input type="text" name="mediaKey" value="<%=mediaInfo.getMediaId()%>" hidden/>
 			<input type="text" name="page" value="<%=mPage%>" style="display: none;"/>
+			<input type="text" name="duration" value="none" style="display: none;"/>
 			<td><textarea name="title" wrap="virtual"><%=mediaInfo.getTitle()%></textarea><br/><input type="file" name="mediaFile"></td>
 			<td><textarea name="content" rows="8" cols="48" wrap="virtual"><%=mediaInfo.getContentInfo()%></textarea></td>
 			<td><textarea name="speaker" wrap="virtual"><%=mediaInfo.getSpeaker()%></textarea></td>
@@ -112,6 +169,7 @@
 	</tr>
 
 <%
+	index++;
 	}
 %>
 			
@@ -121,7 +179,8 @@
 			action="<%=blobstoreService.createUploadUrl("/admin/upload")%>"
 			method="post" enctype="multipart/form-data">
 			
-			<input type="text" name="page" value="<%=mPage%>" style="display: none;"/>
+		<input type="text" name="page" value="<%=mPage%>" style="display: none;"/>
+		<input type="text" name="duration" value="none" style="display: none;"/>
 		<td><textarea name="title" wrap="virtual"></textarea><br/><input type="file" name="mediaFile"></td>
 		<td><textarea name="content" rows="6" cols="45" wrap="virtual"></textarea></td>
 		<td><textarea name="speaker" wrap="virtual"></textarea></td>
@@ -139,8 +198,6 @@
 
 
 <!-- End .module -->
-<!-- <div>
-		
-	</div> -->
+
 </body>
 </html>

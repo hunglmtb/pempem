@@ -92,7 +92,9 @@ public class AdminController {
 		String speaker = Util.getUtf8String(req.getParameter("speaker"));
 		String author = Util.getUtf8String(req.getParameter("author"));
 		String mediaKey = req.getParameter("mediaKey");
-		String categoryId = req.getParameter("categoryId");	
+		String categoryId = req.getParameter("categoryId");
+		String duration = req.getParameter("duration");
+		
 		int page = 1;
 		try {
 			String aPage = req.getParameter("page");
@@ -134,7 +136,8 @@ public class AdminController {
 				author,
 				imageBlobKey,
 				mediaFileBlobKey,
-				categoryId);
+				categoryId,
+				duration);
 		
 		ModelAndView model = showMedia(page);
 		if (media!=null) {

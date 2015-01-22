@@ -1,8 +1,5 @@
 package com.tbs.server.controller;
 
-import static com.tbs.server.util.Common.*;
-
-import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.stereotype.Controller;
@@ -10,15 +7,15 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.google.appengine.api.datastore.Key;
+import com.tbs.server.factories.SampleFactory;
 import com.tbs.server.factories.UserFactory;
-import com.tbs.server.model.User;
-import com.tbs.server.responder.CategoryRow;
+import com.tbs.server.model.Sample;
 import com.tbs.server.responder.MediaInfo;
 import com.tbs.server.util.Util;
 
 
 @Controller
-@RequestMapping("/testdata")
+@RequestMapping("/test")
 public class TestDataController {
 
 
@@ -62,6 +59,20 @@ public class TestDataController {
 		key = uf.insertOrUpdateUser(Util.INDEX_METHOR_INSERT,"updatedUserMac", "MAC_ABC_DEF2");
 		return key!=null;
 	}
+	
+	@RequestMapping("/sample")
+	@ResponseBody
+	public List<Sample> getSample() {
+		return SampleFactory.getInstance().getSamples();
+	}
+	@RequestMapping("/create/sample")
+	@ResponseBody
+	public List<Sample> generateSample() {
+		SampleFactory sampleFacory = SampleFactory.getInstance();
+		sampleFacory.generateSample();
+		return sampleFacory.getSamples();
+	}
+
 
 
 	private boolean makeUser() {

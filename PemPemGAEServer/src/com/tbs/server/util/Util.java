@@ -43,7 +43,6 @@ public class Util {
 	public final static String CATEGORY_NAME = "categoryName";
 	
 	//media
-	public final static String MEDIA_KEY_STRING = "mediaKeyString";
 
 	public final static String ERROR_CODE = "errorCode";
 	public final static String MESSAGE = "message";

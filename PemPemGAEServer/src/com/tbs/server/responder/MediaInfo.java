@@ -6,8 +6,6 @@ import com.google.appengine.api.blobstore.BlobKey;
 import com.google.appengine.api.datastore.KeyFactory;
 import com.google.appengine.api.images.ImagesService;
 import com.google.appengine.api.images.ImagesServiceFactory;
-import com.sun.xml.internal.bind.v2.runtime.reflect.opt.Const;
-import com.tbs.server.factories.CategoryFactory;
 import com.tbs.server.model.Category;
 import com.tbs.server.model.Media;
 import com.tbs.server.util.Common;

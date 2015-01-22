@@ -2,25 +2,38 @@ package com.tbs.server.model;
 
 import java.util.Date;
 
+import org.codehaus.jackson.annotate.JsonIgnore;
+import org.slim3.datastore.Attribute;
 import org.slim3.datastore.Model;
+import org.slim3.datastore.ModelRef;
 
 @Model
-public class History extends JsonRespond {
-	/////////////////// Attributes ///////////////////////////////
-	
+public class Sample extends JsonRespond{
+
+
 	private Date lastSeenTime;
 	private int donePercent;
 	private int viewCount;
 	private String currentSeenTime;
 	private boolean done;
-	private String mediaKeyString;
-	
+
+
 	public int getDonePercent() {
 		return donePercent;
 	}
 
 	public void setDonePercent(int aDonePercent) {
 		this.donePercent = aDonePercent;
+	}
+
+	/////////////////// Relationship ///////////////////////////////
+	@JsonIgnore
+	@Attribute(persistent = false)
+	private ModelRef<Media> mediaRef = new ModelRef<Media>(Media.class);
+
+
+	public ModelRef<Media> getMediaRef() {
+		return mediaRef;
 	}
 
 	public Date getLastSeenTime() {
@@ -53,26 +66,5 @@ public class History extends JsonRespond {
 
 	public void setCurrentSeenTime(String currentSeenTime) {
 		this.currentSeenTime = currentSeenTime;
-	}
-
-
-	public String getMediaKeyString() {
-		return mediaKeyString;
-	}
-
-
-	public void setMediaKeyString(String mediaKeyString) {
-		this.mediaKeyString = mediaKeyString;
-	}
-
-	public void updateViewCount(boolean done, int percent) {
-		if (done) {
-			setViewCount(viewCount+1);
-			this.done = done;
-			donePercent = 100;
-		}
-		else{
-			donePercent = percent<=100&&percent>=0?percent:0;
-		}
 	}
 }

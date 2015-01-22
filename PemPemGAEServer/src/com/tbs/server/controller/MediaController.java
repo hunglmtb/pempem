@@ -21,13 +21,13 @@ import com.google.appengine.api.blobstore.BlobKey;
 import com.google.appengine.api.blobstore.BlobstoreInputStream;
 import com.google.appengine.api.blobstore.BlobstoreService;
 import com.google.appengine.api.blobstore.BlobstoreServiceFactory;
-import com.google.appengine.api.blobstore.ByteRange;
 import com.google.appengine.labs.repackaged.org.json.JSONException;
 import com.tbs.server.factories.MediaFactory;
 import com.tbs.server.model.Media;
 import com.tbs.server.responder.CategoryRow;
 import com.tbs.server.responder.MediaInfo;
 import com.tbs.server.responder.RespondNotification;
+import com.tbs.server.util.Common;
 import com.tbs.server.util.Util;
 
 
@@ -44,7 +44,7 @@ public class MediaController {
 	public RespondNotification getMediaList(
 			@RequestParam("offset") int offset,
 			@RequestParam("limit") int limit) {
-		
+
 		List<MediaInfo> ml = getAll(offset, limit);
 		RespondNotification respond = null;
 		if (ml!=null) {
@@ -55,7 +55,7 @@ public class MediaController {
 		}
 		return respond;
 	}
-	
+
 	//for client smart phone
 	@RequestMapping(value="/all", params={"offset","limit"})
 	@ResponseBody
@@ -74,26 +74,26 @@ public class MediaController {
 
 		return null;
 	}
-	
+
 	//for client smart phone
-		@RequestMapping(value="/category",params={"category","offset","limit"})
-		@ResponseBody
-		public List<MediaInfo> getMediaByCategory(
-				@RequestParam("category") String categoryString,
-				@RequestParam("offset") int offset,
-				@RequestParam("limit") int limit) {
+	@RequestMapping(value="/category",params={"category","offset","limit"})
+	@ResponseBody
+	public List<MediaInfo> getMediaByCategory(
+			@RequestParam("category") String categoryString,
+			@RequestParam("offset") int offset,
+			@RequestParam("limit") int limit) {
 
-			List<Media> mediaList = MediaFactory.getInstance().getMedia(offset,limit,Util.MediaQueryMode.MEDIA_GET_ALL,categoryString);
-			if (mediaList!=null) {
-				List<MediaInfo> mediaInfoList = new ArrayList<MediaInfo>();
-				for (Media media : mediaList) {
-					mediaInfoList.add(new MediaInfo(media));
-				}
-				return mediaInfoList;
+		List<Media> mediaList = MediaFactory.getInstance().getMedia(offset,limit,Util.MediaQueryMode.MEDIA_GET_ALL,categoryString);
+		if (mediaList!=null) {
+			List<MediaInfo> mediaInfoList = new ArrayList<MediaInfo>();
+			for (Media media : mediaList) {
+				mediaInfoList.add(new MediaInfo(media));
 			}
-
-			return null;
+			return mediaInfoList;
 		}
+
+		return null;
+	}
 
 	@RequestMapping(value="/new", params={"offset","limit"})
 	@ResponseBody
@@ -129,7 +129,7 @@ public class MediaController {
 			@RequestParam("limit") String limit) {
 		return null;
 	}
-	
+
 	//api
 	@RequestMapping(value="/update/viewcount", params={"userid","mediaid"})
 	@ResponseBody
@@ -143,7 +143,7 @@ public class MediaController {
 	@RequestMapping(value = "/add", method = RequestMethod.POST, produces = "application/json; charset=utf-8")
 	@ResponseBody
 	public RespondNotification addMedia(HttpServletRequest req) {
-		String jsonDataString = getJsonString(req);
+		String jsonDataString = Common.getJsonString(req);
 		if (jsonDataString!=null) {
 			try {
 				Media media = MediaFactory.getInstance().insertOrUpdateMedia(jsonDataString);
@@ -161,17 +161,17 @@ public class MediaController {
 		}
 		return new RespondNotification(Util.RESPOND_ERROR_CODE, "post data error or error when get post data string", null);		
 	}
-	
+
 
 	@RequestMapping(value="/delete", params={"mediakeystring"})
 	@ResponseBody
 	public RespondNotification deleteCategory(@RequestParam("mediakeystring") String mediakeystring) {
-		
+
 		try {
 			MediaFactory.getInstance().deleteMedia(mediakeystring);
 			List<MediaInfo> ml = getAll(0, 10);
 			return new RespondNotification(Util.RESPOND_SUCCESS_CODE, "ok", ml);	
-			
+
 		} catch (Exception e) {
 			_logger.warning(e.getMessage());
 		}
@@ -184,19 +184,7 @@ public class MediaController {
 		return getAll(0, 10);
 	}
 
-	private String getJsonString(HttpServletRequest request) {
-		StringBuilder stringJsonData = null;
-		try {
-			stringJsonData = Util.converByteToString(request.getInputStream());
-			return stringJsonData.toString();
-		} catch (IOException e) {
-			_logger.warning(e.getMessage());
-			e.printStackTrace();
-		}
-		return null;
-	}
 
-	
 	/**
 	 * getImageRecipe
 	 * 
@@ -209,28 +197,28 @@ public class MediaController {
 	 * @param resp
 	 *            : HttpServletResponse
 	 */
-	
+
 	@RequestMapping(value = "/image", params={"imagekey"}, method = RequestMethod.GET)
 	@ResponseBody
 	public void getImageRecipe(@RequestParam("imagekey") String imageBlobKey,
-								HttpServletRequest req,
-								HttpServletResponse resp) {
-		
+			HttpServletRequest req,
+			HttpServletResponse resp) {
+
 		try {
 			BlobstoreService blobstoreService = BlobstoreServiceFactory.getBlobstoreService();
 			BlobKey imageKey = new BlobKey(imageBlobKey);
 			blobstoreService.serve(imageKey, resp);
-			
-//			ImagesService imagesService = ImagesServiceFactory.getImagesService();
-//			imagesService.getServingUrl(imageKey);
-			
+
+			//			ImagesService imagesService = ImagesServiceFactory.getImagesService();
+			//			imagesService.getServingUrl(imageKey);
+
 		} catch (IOException e) {
 			e.printStackTrace();
 			_logger.warning(e.getMessage());
 			_logger.warning(e.getStackTrace().toString());
 		}
 	}
-	
+
 	@RequestMapping(value="/play", params={"key"})
 	@ResponseBody
 	public void serveMedia(@RequestParam("key") String key,HttpServletResponse res) throws IOException {
@@ -241,8 +229,8 @@ public class MediaController {
 			BlobKey blobKey = new BlobKey(key);
 			//BlobstoreInputStream in = new BlobstoreInputStream(blobKey); 
 			//blobstoreService.serve(blobKey, res);
-			
-			
+
+
 			try {
 				// get your file as InputStream
 				BlobstoreInputStream is = new BlobstoreInputStream(blobKey); 
@@ -255,7 +243,7 @@ public class MediaController {
 			}
 		}
 	}
-	
+
 	@RequestMapping(value="/action", params={"key"})
 	@ResponseBody
 	public ModelAndView actionMedia(@RequestParam("key") String key,HttpServletResponse res,ModelMap model) throws IOException {
@@ -265,8 +253,8 @@ public class MediaController {
 		}
 		return redirect;
 	}
-	
-	
+
+
 	//comment facebook
 	@RequestMapping(value="/social", params={"mediaId"})
 	@ResponseBody
@@ -283,12 +271,22 @@ public class MediaController {
 		model.addAttribute("encodedMediaUrl", encodedMediaUrl);
 		return redirect;
 	}
-	
+
 	//login plugin facebook
-		@RequestMapping(value="/authenticate")
-		@ResponseBody
-		public ModelAndView authenticate(ModelMap model) throws IOException {
-			ModelAndView  redirect = new ModelAndView("loginplugin");
-			return redirect;
-		}
+	@RequestMapping(value="/authenticate")
+	@ResponseBody
+	public ModelAndView authenticate(ModelMap model) throws IOException {
+		ModelAndView  redirect = new ModelAndView("loginplugin");
+		return redirect;
+	}
+
+	//for client smart phone
+	@RequestMapping(value="/sample")
+	@ResponseBody
+	public List<Media> getSample() {
+		int offset = 0;
+		int limit = 10;
+		List<Media> mediaList = MediaFactory.getInstance().getMedia(offset,limit,Util.MediaQueryMode.MEDIA_GET_ALL,null);
+		return mediaList;
+	}
 }

@@ -19,12 +19,6 @@ public class Media {
 	/////////////////// Relationship ///////////////////////////////
 	private ModelRef<Category> categoryRef = new ModelRef<Category>(Category.class);
 
-	@Attribute(persistent = false)
-	private InverseModelListRef<History, Media> historyListRef = new  InverseModelListRef<History,Media>
-	(History.class,
-			HistoryMeta.get().mediaRef.getName(),
-			this);
-
 	/////////////////// fields ///////////////////////////////
 	//input fields
 	private String title;
@@ -62,10 +56,6 @@ public class Media {
 
 	public void setKey(Key key) {
 		this.key = key;
-	}
-
-	public InverseModelListRef<History, Media> getHistoryListRef() {
-		return historyListRef;
 	}
 
 	public ModelRef<Category> getCategoryRef() {

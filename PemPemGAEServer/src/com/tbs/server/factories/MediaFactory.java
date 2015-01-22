@@ -12,13 +12,10 @@ import com.google.appengine.api.datastore.Key;
 import com.google.appengine.api.datastore.KeyFactory;
 import com.google.appengine.labs.repackaged.org.json.JSONException;
 import com.google.appengine.labs.repackaged.org.json.JSONObject;
-import com.tbs.server.meta.CategoryMeta;
 import com.tbs.server.meta.MediaMeta;
 import com.tbs.server.model.Category;
 import com.tbs.server.model.Media;
-import com.tbs.server.model.User;
 import com.tbs.server.util.Common;
-import com.tbs.server.util.Util;
 import com.tbs.server.util.Util.MediaQueryMode;
 
 
@@ -37,11 +34,21 @@ public class MediaFactory extends EntityFactory {
 
 	public Media insertOrUpdateMedia(String jsonDataString) throws JSONException {
 
-		JSONObject jsonRecipe = new JSONObject(jsonDataString);
-		String mediaKey = jsonRecipe.getString(Util.MEDIA_KEY_STRING);
+		JSONObject jsonData = new JSONObject(jsonDataString);
 
+		Category category = null;
+		String categoryKey = jsonData.getString(Common.JSON_CATEGORY_KEY);
+		if(!Common.validateString(categoryKey)){
+			category = CategoryFactory.getInstance().createOtherCategory();
+		}
+		else{
+			category = CategoryFactory.getInstance().getCategory(categoryKey);
+		}
+		if (category==null) category = CategoryFactory.getInstance().createOtherCategory();
+
+		//---------------------------------------------------------------------------------------
+		String mediaKey = jsonData.getString(Common.JSON_MEDIA_KEY);
 		Media media = getMedia(mediaKey);
-
 		//insert or update
 		Date now = new Date();
 		if(media != null){
@@ -49,7 +56,7 @@ public class MediaFactory extends EntityFactory {
 		}
 		else{
 			media = new Media();
-			Key ancestorKey = KeyFactory.createKey("Media", "Media");
+			Key ancestorKey = category.getKey();
 			Key childKey = Datastore.allocateId(ancestorKey, Media.class);
 			media.setKey(childKey);
 			media.setPublishedDate(now);
@@ -59,34 +66,34 @@ public class MediaFactory extends EntityFactory {
 		}
 
 		//set properties for media
-		media.setTitle(jsonRecipe.getString(MediaMeta.get().title.getName()));
-		media.setContentInfo(jsonRecipe.getString(MediaMeta.get().contentInfo.getName()));
-		media.setAuthor(jsonRecipe.getString(MediaMeta.get().author.getName()));
-		media.setSpeaker(jsonRecipe.getString(MediaMeta.get().speaker.getName()));
-		media.setDuration(jsonRecipe.getString(MediaMeta.get().duration.getName()));
+		media.setTitle(jsonData.getString(MediaMeta.get().title.getName()));
+		media.setContentInfo(jsonData.getString(MediaMeta.get().contentInfo.getName()));
+		media.setAuthor(jsonData.getString(MediaMeta.get().author.getName()));
+		media.setSpeaker(jsonData.getString(MediaMeta.get().speaker.getName()));
+		media.setDuration(jsonData.getString(MediaMeta.get().duration.getName()));
 		/*media.setMediaType(jsonRecipe.getInt(MediaMeta.get().mediaType.getName()));*/
 		media.setMediaType(Common.MEDIA_TYPE_AUDIO);
 
 		//image
-		media.setMediaImageUrl(jsonRecipe.getString(MediaMeta.get().mediaImageUrl.getName()));
-		media.setMediaImageThumbUrl(jsonRecipe.getString(MediaMeta.get().mediaImageThumbUrl.getName()));
+		media.setMediaImageUrl(jsonData.getString(MediaMeta.get().mediaImageUrl.getName()));
+		media.setMediaImageThumbUrl(jsonData.getString(MediaMeta.get().mediaImageThumbUrl.getName()));
 
 		//media file 
-		media.setMediaFileUrl(jsonRecipe.getString(MediaMeta.get().mediaFileUrl.getName()));
+		media.setMediaFileUrl(jsonData.getString(MediaMeta.get().mediaFileUrl.getName()));
 
 
 		//TODO update later for need to update category and update web client too
 		//check update category
 		//set category
-		String categoryId = jsonRecipe.getString(CategoryMeta.get().categoryId.getName());
-		Category category = CategoryFactory.getInstance().getCategory(categoryId);
+		/*String categoryId = jsonData.getString(CategoryMeta.get().categoryId.getName());
+		Category category = CategoryFactory.getInstance().getCategoryById(categoryId);*/
 		media.getCategoryRef().setModel(category);
 
 		Key key = Datastore.put(media);
 
 		if (key!=null) {
 			String url = Common.initMediaLinkUrl(key);
-			if (url!=null&&url.length()>0) {
+			if (Common.validateString(url)) {
 				media.setMediaLinkUrl(url);
 				Datastore.put(media);
 			}
@@ -97,13 +104,13 @@ public class MediaFactory extends EntityFactory {
 
 
 	public Media insertOrUpdateMedia(String mediaKey,
-									String title,
-									String content,
-									String speaker,
-									String author,
-									String imageBlobKey,
-									String mediaFileBlobKey,
-									String categoryId, String duration){
+			String title,
+			String content,
+			String speaker,
+			String author,
+			String imageBlobKey,
+			String mediaFileBlobKey,
+			String categoryId, String duration){
 
 
 		Media media = getMedia(mediaKey);
@@ -139,7 +146,7 @@ public class MediaFactory extends EntityFactory {
 		if (mediaFileBlobKey!=null) {
 			media.setMediaFileUrl(mediaFileBlobKey);
 		}
-		
+
 		//image
 		if (imageBlobKey!=null) {
 			media.setMediaImageUrl(imageBlobKey);
@@ -150,7 +157,7 @@ public class MediaFactory extends EntityFactory {
 		//check update category
 		//set category
 		//String categoryId = jsonRecipe.getString(CategoryMeta.get().categoryId.getName());
-		Category category = CategoryFactory.getInstance().getCategory(categoryId);
+		Category category = CategoryFactory.getInstance().getCategoryById(categoryId);
 		media.getCategoryRef().setModel(category);
 
 		Key key = Datastore.put(media);
@@ -165,29 +172,24 @@ public class MediaFactory extends EntityFactory {
 		}
 		else return null;
 	}
-	
-	
-	private Media getMedia(String mediaKey) {
-		if (mediaKey!=null&&mediaKey.length()>0) {
-			try {
-				Key key = KeyFactory.stringToKey(mediaKey);
-				Media media = Datastore.get(Media.class, key);
-				return media;
 
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
+
+	public Media getMedia(String mediaKey) {
+		if (Common.validateString(mediaKey)) {
+			Key key = KeyFactory.stringToKey(mediaKey);
+			Media media = Datastore.get(Media.class, key);
+			return media;
 		}
 		return null;
 	}
 
-	public User getMedia() {
+	public Media getMedia() {
 		return null;
 	}
+
 	public void deleteMedia(String mediakeystring) throws Exception{
 		Key categoryKey = KeyFactory.stringToKey(mediakeystring);			
 		Datastore.delete(categoryKey);
-
 	}
 
 	public List<Media> getMedia(int offset, int limit, MediaQueryMode mode, String categoryString) {
@@ -209,7 +211,7 @@ public class MediaFactory extends EntityFactory {
 
 			mediaQuery.limit(limit);
 			mediaQuery.offset(offset);
-			
+
 			//mediaQuery.
 			lMedia = mediaQuery.asList();
 

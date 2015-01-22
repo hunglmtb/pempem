@@ -2,54 +2,28 @@ package com.tbs.server.model;
 
 import java.util.Date;
 
-import org.slim3.datastore.Attribute;
-import org.slim3.datastore.InverseModelListRef;
 import org.slim3.datastore.Model;
 
-import com.google.appengine.api.datastore.Key;
-import com.tbs.server.meta.HistoryMeta;
-
 @Model
-public class User {
-	/////////////////// Attributes ///////////////////////////////
-	@Attribute(primaryKey = true)
-	private Key key;
-	
-	/////////////////// Relationship ///////////////////////////////
-	@Attribute(persistent = false)
-    private InverseModelListRef<History, User> historyListRef = new  InverseModelListRef<History,User>
-																				(History.class,
-																				HistoryMeta.get().userRef.getName(),
-																				this);
+public class User  extends JsonRespond {
 
 	private String facebookId;
-	
+
 	private String facebookAccount;
-	
+
 	private String mailAddress;
 
 	private String username;
-	
+
 	private String macAddress;
 
 	private String status;
-	
+
+	private String device;
+
 	private Date registeredDate;
-	
+
 	private Date modifiedDate;
-
-    /////////////////// Attribute getters/setters //////////////////
-	public Key getKey() {
-		return key;
-	}
-
-	public void setKey(Key key) {
-		this.key = key;
-	}
-
-	public InverseModelListRef<History, User> getHistoryListRef() {
-		return historyListRef;
-	}
 
 	public String getMacAddress() {
 		return macAddress;
@@ -58,7 +32,7 @@ public class User {
 	public void setMacAddress(String macAddress) {
 		this.macAddress = macAddress;
 	}
-	
+
 
 	/**
 	 * Gets status of the user in String
@@ -75,8 +49,8 @@ public class User {
 	public void setStatus(String status) {
 		this.status = status;
 	}
-	
-	
+
+
 	/**
 	 * Gets date when the user registered 
 	 * @return the registered date
@@ -100,7 +74,7 @@ public class User {
 	public Date getModifiedDate() {
 		return modifiedDate;
 	}
-	
+
 	public String getFacebookId() {
 		return facebookId;
 	}
@@ -123,7 +97,7 @@ public class User {
 	public void setModifiedDate(Date modifiedDate) {
 		this.modifiedDate = modifiedDate;
 	}
-	
+
 	public String getFacebookAccount() {
 		return facebookAccount;
 	}
@@ -138,6 +112,14 @@ public class User {
 
 	public void setMailAddress(String mailAddress) {
 		this.mailAddress = mailAddress;
+	}
+
+	public String getDevice() {
+		return device;
+	}
+
+	public void setDevice(String device) {
+		this.device = device;
 	}
 
 }

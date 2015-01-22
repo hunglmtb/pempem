@@ -1,18 +1,23 @@
 package com.tbs.server.factories;
 
 import java.util.Date;
+import java.util.List;
 
 import org.slim3.datastore.Datastore;
+import org.slim3.datastore.ModelQuery;
 
 import com.google.appengine.api.datastore.Key;
 import com.google.appengine.api.datastore.KeyFactory;
 import com.google.appengine.api.datastore.Query.FilterOperator;
+import com.tbs.server.meta.UserMeta;
 import com.tbs.server.model.User;
+import com.tbs.server.util.Common;
 import com.tbs.server.util.Util;
 
 
 public class UserFactory extends EntityFactory {
 
+	private static final String USER = "User";
 	private static UserFactory instance = null;
 
 	public static UserFactory getInstance() {
@@ -26,7 +31,12 @@ public class UserFactory extends EntityFactory {
 	public boolean insertOrUpdateUser(User user) {
 		return false;
 	}
-	public User getUser() {
+	public User getUser(String userKey) {
+		if (Common.validateString(userKey)) {
+			Key key = KeyFactory.stringToKey(userKey);
+			User user = Datastore.get(User.class, key);
+			return user;
+		}
 		return null;
 	}
 	public boolean deleteUser() {
@@ -50,11 +60,11 @@ public class UserFactory extends EntityFactory {
 			Key userKey = KeyFactory.stringToKey(userId);
 			user = getUser(userKey);
 		}
-		
+
 		if(user==null&&macAddress != null){
 			user = getUserByMacAddress(macAddress);
 		}
-		
+
 		if(user == null){
 			user = new User();
 			if(userId.equals(Util.INDEX_METHOR_INSERT)){
@@ -84,17 +94,15 @@ public class UserFactory extends EntityFactory {
 	 */
 	public User getUserByMacAddress(String macAddress) {
 		User user = null;
-		try {
+		if (Common.validateString(macAddress)) {
 			user = Datastore.query(User.class)
-					.filter(Util.USER_MAC_ADDRESS, FilterOperator.EQUAL, macAddress)
+					.filter(UserMeta.get().macAddress.getName(), FilterOperator.EQUAL, macAddress)
 					.asSingle();
-		} catch (Exception e) {
-			user = null;
-		}
 
+		}
 		return user;
 	}
-	
+
 
 	/**
 	 * getUser
@@ -104,6 +112,36 @@ public class UserFactory extends EntityFactory {
 	public User getUser(Key userKey){
 		User user = null;
 		user = Datastore.get(User.class, userKey);
+		return user;
+	}
+
+
+	public List<User> getUsers() {
+		List<User> users = null;
+		Key ancesstorkey = KeyFactory.createKey(USER, USER);
+		ModelQuery<User> userQuery  = Datastore.query(User.class,ancesstorkey);
+		int limit = 20;
+		int offset = 0;
+		userQuery.limit(limit);
+		userQuery.offset(offset);
+		users = userQuery.asList();
+		return users;
+	}
+
+	public User registerUser(String macAddress, String userName) {
+		User user = null;
+		if (Common.validateString(macAddress)) {
+			user = getUserByMacAddress(macAddress);
+			if (user ==null) {
+				user = new User();
+				Key ancestorKey = KeyFactory.createKey(USER, USER);
+				Key key = Datastore.allocateId(ancestorKey, User.class);
+				user.setKey(key);
+				user.setMacAddress(macAddress);
+				user.setUsername(userName);
+				Datastore.put(user);
+			}
+		}
 		return user;
 	}
 }

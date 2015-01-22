@@ -33,7 +33,7 @@ import com.tbs.server.util.UtilView;
 @RequestMapping("/admin")
 public class AdminController {
 	
-	private static final int sLimit = 3;
+	private static final int sLimit = 15;
 	private BlobstoreService blobstoreService = BlobstoreServiceFactory.getBlobstoreService();
     private ImagesService imagesService = ImagesServiceFactory.getImagesService();
 

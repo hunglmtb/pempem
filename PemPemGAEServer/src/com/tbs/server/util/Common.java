@@ -6,8 +6,10 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Logger;
 
 import javax.servlet.ServletContext;
+import javax.servlet.http.HttpServletRequest;
 
 import com.google.appengine.api.datastore.Key;
 import com.google.appengine.api.datastore.KeyFactory;
@@ -22,7 +24,7 @@ public class Common {
 	public static final String CATEGORY_ID_NEWSFEED = "NEWSFEED";
 	public static final String CATEGORY_ID_SETTING = "SETTING";
 	public static final String CATEGORY_ID_EXIT = "EXIT";
-	
+
 	public static final String CATEGORY_ID_NAME_01 = "CATEGORY01";
 	public static final String CATEGORY_ID_NAME_02 = "CATEGORY02";
 	public static final String CATEGORY_ID_NAME_03 = "CATEGORY03";
@@ -36,20 +38,16 @@ public class Common {
 	public static final int MEDIA_TYPE_VIDEO = 1;
 	public static final int MEDIA_TYPE_IMAGE = 2;
 	private static final String APP_DOMAIN = "langnghe.com";
+	
+	//key json
+	public static final String JSON_HISTORY_KEY = "historykey";
+	public static final String JSON_CATEGORY_KEY = "categorykey";
+	public static final String JSON_MEDIA_KEY = "mediakey";
+	public static final String JSON_USER_KEY = "userkey";
+	
 	public static String[] mediaId;
-	private static String[] title;
 	public static List<String> mediaFileUrl;
-	private static String[] categoryId;
-	private static String[] likeCount;
-	private static String[] commentCount;
-	private static String[] speaker;
-	private static String[] contentInfo;
-	private static String[] duration;
 	public static List<String> mediaLinkUrl;
-	private static String[] author;
-	private static String[] publishedDate;
-	private static String[] viewCount;
-	private static int[] mediaType;
 	public static List<String> mediaImageThumbUrl;
 	public static List<String> mediaImageUrl;
 	public static int[] mediaHistoryTime;
@@ -57,12 +55,12 @@ public class Common {
 
 	public static List<String> loadArray(String path, ServletContext servletContext){
 		List<String> lines = new ArrayList<String>();
-//		BufferedReader reader = null;
+		//		BufferedReader reader = null;
 		try {
 			InputStream resourceContent = servletContext.getResourceAsStream(path);
-            BufferedReader reader = new BufferedReader(new InputStreamReader(resourceContent));
+			BufferedReader reader = new BufferedReader(new InputStreamReader(resourceContent));
 
-//			reader = new BufferedReader(new FileReader(path));
+			//			reader = new BufferedReader(new FileReader(path));
 			String line = null;
 			while ((line = reader.readLine()) != null) {
 				lines.add(line);
@@ -88,7 +86,7 @@ public class Common {
 		author = loadArray("mediaid.txt");
 		publishedDate = loadArray("mediaid.txt");
 		viewCount = loadArray("mediaid.txt");*/
-//		mediaType = loadArray("mediaid.txt");
+		//		mediaType = loadArray("mediaid.txt");
 		mediaLinkUrl = loadArray("/WEB-INF//mediaLinkUrl.txt",servletContext);
 		mediaFileUrl = loadArray("/WEB-INF//mediaFileUrl.txt",servletContext);
 		mediaImageThumbUrl = loadArray("/WEB-INF//mediaImageThumbUrl.txt",servletContext);
@@ -101,7 +99,7 @@ public class Common {
 		int[] lines = new int[128];
 		try {
 			InputStream resourceContent = servletContext.getResourceAsStream(path);
-            BufferedReader reader = new BufferedReader(new InputStreamReader(resourceContent));
+			BufferedReader reader = new BufferedReader(new InputStreamReader(resourceContent));
 
 			String line = null;
 			int i = 0;
@@ -125,6 +123,42 @@ public class Common {
 			e.printStackTrace();
 		}
 		return null;
+	}
+
+	public static boolean validateString(String string) {
+		return string!=null&&string.length()>0;
+	}
+
+	public static String getKeyString(Key key) {
+		if (key!=null) {
+			return KeyFactory.keyToString(key);			
+		}
+		else{
+			return "";
+		}
+	}
+
+
+	public static String getJsonString(HttpServletRequest request) {
+		StringBuilder stringJsonData = null;
+		try {
+			stringJsonData = Util.converByteToString(request.getInputStream());
+			return stringJsonData.toString();
+		} catch (IOException e) {
+			Logger.getLogger(Common.class.getName()).warning(e.getMessage());
+			e.printStackTrace();
+		}
+		return null;
+	}
+	
+	public static String stackTraceToString(Throwable e) {
+	    StringBuilder sb = new StringBuilder();
+	    sb.append(e.getMessage()+"\n-------------------------\n");
+	    for (StackTraceElement element : e.getStackTrace()) {
+	        sb.append(element.toString());
+	        sb.append("\n");
+	    }
+	    return sb.toString();
 	}
 
 }

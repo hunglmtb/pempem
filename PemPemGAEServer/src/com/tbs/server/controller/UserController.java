@@ -34,6 +34,91 @@ public class UserController {
 		}
 		return users;
 	}
+	/*----------------------------------------------------------------------HISTORY-----------------------------------------------------*/
+
+
+	//get histories
+	@RequestMapping(value = "/get/macaddress")
+	@ResponseBody
+	public User getUserByMacAddress(HttpServletRequest req,
+			@RequestParam("macaddress") String macaddress) {
+		User user = null;
+		try {
+			if (Common.validateMacAddress(macaddress)) {
+				user = UserFactory.getInstance().getUserByMacAddress(macaddress);
+				if (user==null) {
+					user = UserFactory.getInstance().registerUser(macaddress, "TBD1");
+				}
+			}
+			else{
+				user = new User();
+				user.setErrorMessage("macadress invalid");
+			}
+		} catch (java.lang.Exception e) {
+			e.printStackTrace();
+			user = new User();
+			user.setErrorMessage(Common.stackTraceToString(e));
+		}
+		return user;		
+	}
+
+	//get histories
+	@RequestMapping(value = "/get/key")
+	@ResponseBody
+	public User getUserByKey(HttpServletRequest req,
+			@RequestParam("key") String keyString) {
+		User user = null;
+		try {
+			if (Common.validateString(keyString)) {
+				user = UserFactory.getInstance().getUser(keyString);
+			}
+			else{
+				user = new User();
+				user.setErrorMessage("key invalid");
+			}
+		} catch (java.lang.Exception e) {
+			e.printStackTrace();
+			user = new User();
+			user.setErrorMessage(Common.stackTraceToString(e));
+		}
+		return user;		
+	}
+	
+
+	//add api
+	@RequestMapping(value = "/save", method = RequestMethod.POST, produces = "application/json; charset=utf-8")
+	@ResponseBody
+	public User saveUser(HttpServletRequest req){
+		User user = null;
+		try {
+			String jsonDataString = Common.getJsonString(req);
+			if (jsonDataString!=null) {
+				user = UserFactory.getInstance().insertOrUpdateUser(jsonDataString);
+			}
+		} catch (java.lang.Exception e) {
+			e.printStackTrace();
+			user = new User();
+			user.setErrorMessage(Common.stackTraceToString(e));
+		}
+		return user;		
+	}
+	
+	@RequestMapping(value = "/delete")
+	@ResponseBody
+	public String deleteUser(HttpServletRequest req,
+			@RequestParam("userkey") String userKeyString) {
+		String resprond = "none";
+		try {
+			boolean result = UserFactory.getInstance().deleteUser(userKeyString);
+			resprond = result?"OK":"key empty";
+		} catch (java.lang.Exception e) {
+			e.printStackTrace();
+			resprond = Common.stackTraceToString(e);
+		}
+		return resprond;		
+	}
+
+	/*----------------------------------------------------------------------HISTORY-----------------------------------------------------*/
 
 	//add api
 	@RequestMapping(value = "/history/save", method = RequestMethod.POST, produces = "application/json; charset=utf-8")
@@ -48,7 +133,7 @@ public class UserController {
 		} catch (java.lang.Exception e) {
 			e.printStackTrace();
 			history = new History();
-			history.setErrorMessage(e.getMessage());
+			history.setErrorMessage(Common.stackTraceToString(e));
 		}
 		return history;		
 	}
@@ -90,7 +175,7 @@ public class UserController {
 		}
 		return history;		
 	}
-	
+
 	@RequestMapping(value = "/history/delete")
 	@ResponseBody
 	public String deleteHistory(HttpServletRequest req,

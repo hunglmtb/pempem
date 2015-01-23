@@ -37,58 +37,54 @@ public class HistoryFactory extends EntityFactory {
 		if (!validatedJsonData(jsonHistory)) {
 			return error;
 		}
-		String historyKey = jsonHistory.has(Common.JSON_HISTORY_KEY)?
-				jsonHistory.getString(Common.JSON_HISTORY_KEY):null;
+		String historyKey = jsonHistory.has(Common.JSON_KEY_STRING)?jsonHistory.getString(Common.JSON_KEY_STRING):null;
 
+		History history = getHistory(historyKey);
+		//Media media = getMedia(historyKey);
+		//insert or update
+		if(history == null){
+			User user = null;
+			String userKey = jsonHistory.has(Common.JSON_USER_KEY)?jsonHistory.getString(Common.JSON_USER_KEY):null;
+			if(Common.validateString(userKey)){
+				user = UserFactory.getInstance().getUser(userKey);
+			}
+			if (user==null) {
+				error.setErrorMessage("user no found");
+				return error;
+			}
 
-				History history = getHistory(historyKey);
-				//Media media = getMedia(historyKey);
+			String mediaKeyString = jsonHistory.has(Common.JSON_MEDIA_KEY)?jsonHistory.getString(Common.JSON_MEDIA_KEY):null;
+			Media media = MediaFactory.getInstance().getMedia(mediaKeyString);
+			if (media==null){
+				error.setErrorMessage("media no found");
+				return error;
+			}
 
-				//insert or update
-				if(history == null){
-					User user = null;
-					String userKey = jsonHistory.has(Common.JSON_USER_KEY)?
-							jsonHistory.getString(Common.JSON_USER_KEY):null;
-							if(Common.validateString(userKey)){
-								user = UserFactory.getInstance().getUser(userKey);
-							}
-							if (user==null) {
-								error.setErrorMessage("user no found");
-								return null;
-							}
+			history = getHistory(user.getKeyString(), mediaKeyString);
 
-							String mediaKeyString = jsonHistory.has(Common.JSON_MEDIA_KEY)?jsonHistory.getString(Common.JSON_MEDIA_KEY):null;
-							Media media = MediaFactory.getInstance().getMedia(mediaKeyString);
-							if (media==null){
-								error.setErrorMessage("media no found");
-								return null;
-							}
+			if (history==null) {
+				history = new History();
+				Key ancestorKey = user.getKey();
+				Key childKey = Datastore.allocateId(ancestorKey, History.class);
+				history.setKey(childKey);
+				history.setMediaKeyString(mediaKeyString);
+			}
+			else{
+				history.setViewCount(0);
+			}
 
-							history = getHistory(user.getKeyString(), mediaKeyString);
+		}
 
-							if (history==null) {
-								history = new History();
-								Key ancestorKey = user.getKey();
-								Key childKey = Datastore.allocateId(ancestorKey, History.class);
-								history.setKey(childKey);
-								history.setMediaKeyString(mediaKeyString);
-							}
-							else{
-								history.setViewCount(0);
-							}
+		//set properties for history
+		//		int viewCount = history.getViewCount();
+		history.updateViewCount(jsonHistory.getBoolean(HistoryMeta.get().done.getName()),jsonHistory.getInt(HistoryMeta.get().donePercent.getName()));
+		Date now = new Date();
+		history.setLastSeenTime(now);
+		history.setCurrentSeenTime(jsonHistory.getString(HistoryMeta.get().currentSeenTime.getName()));
 
-				}
+		Datastore.put(history);
 
-				//set properties for history
-				//		int viewCount = history.getViewCount();
-				history.updateViewCount(jsonHistory.getBoolean(HistoryMeta.get().done.getName()),jsonHistory.getInt(HistoryMeta.get().donePercent.getName()));
-				Date now = new Date();
-				history.setLastSeenTime(now);
-				history.setCurrentSeenTime(jsonHistory.getString(HistoryMeta.get().currentSeenTime.getName()));
-
-				Datastore.put(history);
-
-				return history;
+		return history;
 	}
 
 	private boolean validatedJsonData(JSONObject jsonHistory) {

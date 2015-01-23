@@ -9,6 +9,8 @@ import org.slim3.datastore.ModelQuery;
 import com.google.appengine.api.datastore.Key;
 import com.google.appengine.api.datastore.KeyFactory;
 import com.google.appengine.api.datastore.Query.FilterOperator;
+import com.google.appengine.labs.repackaged.org.json.JSONException;
+import com.google.appengine.labs.repackaged.org.json.JSONObject;
 import com.tbs.server.meta.UserMeta;
 import com.tbs.server.model.User;
 import com.tbs.server.util.Common;
@@ -39,7 +41,14 @@ public class UserFactory extends EntityFactory {
 		}
 		return null;
 	}
-	public boolean deleteUser() {
+
+
+	public boolean deleteUser(String userKeyString) {
+		if (Common.validateString(userKeyString)) {
+			Key userKey = KeyFactory.stringToKey(userKeyString);			
+			Datastore.delete(userKey);
+			return true;
+		}
 		return false;
 	}
 
@@ -93,13 +102,10 @@ public class UserFactory extends EntityFactory {
 	 * @return User
 	 */
 	public User getUserByMacAddress(String macAddress) {
-		User user = null;
-		if (Common.validateString(macAddress)) {
-			user = Datastore.query(User.class)
-					.filter(UserMeta.get().macAddress.getName(), FilterOperator.EQUAL, macAddress)
-					.asSingle();
+		User user = Datastore.query(User.class)
+				.filter(UserMeta.get().macAddress.getName(), FilterOperator.EQUAL, macAddress)
+				.asSingle();
 
-		}
 		return user;
 	}
 
@@ -130,19 +136,54 @@ public class UserFactory extends EntityFactory {
 
 	public User registerUser(String macAddress, String userName) {
 		User user = null;
-		if (Common.validateString(macAddress)) {
-			user = getUserByMacAddress(macAddress);
-			if (user ==null) {
-				user = new User();
-				Key ancestorKey = KeyFactory.createKey(USER, USER);
-				Key key = Datastore.allocateId(ancestorKey, User.class);
-				user.setKey(key);
-				user.setMacAddress(macAddress);
-				user.setUsername(userName);
-				Datastore.put(user);
-			}
+		if (Common.validateMacAddress(macAddress)) {
+			user = new User();
+			Key ancestorKey = KeyFactory.createKey(USER, USER);
+			Key key = Datastore.allocateId(ancestorKey, User.class);
+			user.setKey(key);
+			user.setMacAddress(macAddress);
+			user.setUsername(userName);
+			Datastore.put(user);
 		}
 		return user;
 	}
+
+	public User insertOrUpdateUser(String jsonData) throws JSONException {
+		User error = new User();
+		error.setErrorMessage("not validatedJsonData");
+
+		JSONObject jsonUser = new JSONObject(jsonData);
+		if (!validatedJsonData(jsonUser)) {
+			return error;
+		}
+		String userKey = jsonUser.has(Common.JSON_KEY_STRING)?jsonUser.getString(Common.JSON_KEY_STRING):null;
+
+		User user = getUser(userKey);
+		//Media media = getMedia(historyKey);
+		//insert or update
+		if(user == null){
+			String macAddress = jsonUser.has(UserMeta.get().macAddress.getName())?jsonUser.getString(UserMeta.get().macAddress.getName()):null;
+			user = registerUser(macAddress, "TBD2");
+		}
+		
+		if(user != null){
+			String username = jsonUser.has(UserMeta.get().username.getName())?jsonUser.getString(UserMeta.get().username.getName()):null;
+			user.setUsername(username);
+			String device =jsonUser.has(UserMeta.get().device.getName())?jsonUser.getString(UserMeta.get().device.getName()):null;
+			user.setDevice(device);
+			Datastore.put(user);
+		}
+		else{
+			user = error;
+			error.setErrorMessage("user not found");
+		}
+		return user;
+	}
+
+	private boolean validatedJsonData(JSONObject jsonHistory) {
+		boolean result = (jsonHistory.has(Common.JSON_KEY_STRING))|| (jsonHistory.has(UserMeta.get().macAddress.getName()));
+		return result;
+	}
+
 }
 

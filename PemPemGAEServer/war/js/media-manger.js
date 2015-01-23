@@ -57,21 +57,17 @@ function getOptionsFromForm() {
  * @param data
  */
 function createRow(data) {
-	if (data.respondCode=="SUCCESS") {
-		// Create pagination element with options from form
-		members = data.respondData;
-		var optInit = getOptionsFromForm();
-		$("#Pagination").pagination(data.length, optInit);
-		// Event Handler for for button
-		$("#setoptions").click(function() {
-			var opt = getOptionsFromForm();
-			// Re-create pagination content with new parameters
-			$("#Pagination").pagination(members.length, opt);
-		});
-	}
-	else{
-		alert("error: "+data.respondMessage);
-	}
+	// Create pagination element with options from form
+	members = data.respondData;
+	var optInit = getOptionsFromForm();
+	$("#Pagination").pagination(data.length, optInit);
+	// Event Handler for for button
+	$("#setoptions").click(function() {
+		var opt = getOptionsFromForm();
+		// Re-create pagination content with new parameters
+		$("#Pagination").pagination(members.length, opt);
+	});
+
 }
 
 /**
@@ -107,7 +103,7 @@ function createTable(i, max_elem) {
 			
 			strRow += "<td>" + jsonTR.title + "</td><td>" + jsonTR.contentInfo
 			+ "</td><td>" + jsonTR.speaker + "</td><td>" + jsonTR.author
-			+ "</td><td>" + getCategoryNameById(jsonTR.categoryId)
+			+ "</td><td>" + getCategoryNameById(jsonTR.categoryKeyString)
 			+ '</td><td> <img src="'+jsonTR.mediaImageUrl+'" alt="" style="width: 72; height : 72; max-height: 100%; max-width: 100%;" align="left">'
 			+ '</td><td><a href="/media/action?key='+jsonTR.mediaFileUrl+'">action</a>'
 			+ '</td><td><a href="'+jsonTR.mediaLinkUrl+'">shared url</a></td>'
@@ -176,16 +172,10 @@ function formLoad() {
 	
 	$.get(url,function(data) {
 		if(data!=null && data!=""){
-			if (data.respondCode=="SUCCESS") {
-				categories = data.respondData;
-				var url2 = '/media/admin/all?limit='+10+"&offset="+0;
-				requestUrl(url2);
-				
-				initDropDown('#categorydropdown');
-			}
-			else{
-				alert("error: "+data.respondMessage);
-			}
+			categories = data;
+			var url2 = '/media/admin/all?limit='+10+"&offset="+0;
+			requestUrl(url2);
+			initDropDown('#categorydropdown');
 		}
 		else{
 			alert("error: none respond ");
@@ -235,7 +225,7 @@ function getCategoryNameById(categoryId) {
 		var category;
 		for ( var i = 0; i < categories.length; i++) {
 			category = categories[i];
-			if (category.categoryId==categoryId) {
+			if (category.keyString==categoryId) {
 				return category.categoryName;
 			}
 		}
@@ -358,7 +348,7 @@ function initDropDown(selector) {
 	var category;
 	for ( var i = 0; i < categories.length; i++) {
 		category = categories[i];
-		$(selector).append('<option value="'+category.categoryId+'">'+category.categoryName+'</option>');
+		$(selector).append('<option value="'+category.keyString+'">'+category.categoryName+'</option>');
 	}
 }
 

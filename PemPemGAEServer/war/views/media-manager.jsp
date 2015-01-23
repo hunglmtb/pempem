@@ -1,7 +1,7 @@
 <%@page import="java.util.ArrayList"%>
 <%@ page language="java" contentType="text/html; charset=utf-8"
 	pageEncoding="UTF-8"%>
-<%@ page import="com.tbs.server.responder.MediaInfo"%>
+<%@ page import="com.tbs.server.model.Media"%>
 <%@ page import="com.tbs.server.factories.CategoryFactory"%>
 <%@ page import="com.tbs.server.util.UtilView"%>
 <%@ page import="com.google.gwt.rpc.server.Pair"%>
@@ -14,15 +14,16 @@
 			.getBlobstoreService();
 	Object result = request.getAttribute("result");
 	Object rs = request.getAttribute("mediaList");
-	List<MediaInfo> mediaList = new ArrayList<MediaInfo>();
+	List<Media> mediaList = new ArrayList<Media>();
 	String notificationText = "";
 	if (rs != null) {
-		mediaList.addAll((ArrayList<MediaInfo>) rs);
+		mediaList.addAll((ArrayList<Media>) rs);
 	} else {
 		notificationText = "no mediaList";
 	}
-
-	List<Pair<String, String>> list = CategoryFactory.getInstance().getCategoryPairList();
+	
+	CategoryFactory categoryFactory = CategoryFactory.getInstance();
+	List<Pair<String, String>> list = categoryFactory.getCategoryPairList();
 	String dropDownList = UtilView.getInstance().buildDropDownList(list);
 	
 	//paginator 
@@ -130,33 +131,34 @@ $(function(){
   
 <%
 	int index = 0;
-  	for (MediaInfo mediaInfo : mediaList) {
+  	for (Media mediaInfo : mediaList) {
+		String categoryKeyString = mediaInfo.getCategoryKeyString();
   %>
-	<tr id="view<%=mediaInfo.getMediaId()%>">
+	<tr id="view<%=mediaInfo.getKeyString() %>">
 		<td><a href="/media/action?key=<%=mediaInfo.getMediaFileUrl()%>"><%=mediaInfo.getTitle()%></a></td>
 		<td><%=mediaInfo.getContentInfo()%></td>
 		<td><%=mediaInfo.getSpeaker()%></td>
 		<td><%=mediaInfo.getAuthor()%></td>
-		<td><%=mediaInfo.getCategoryName()%></td>
+		<td><%= categoryFactory.getCategoryName(mediaInfo.getCategoryKeyString(),list) %></td>
 		<td><img src="<%=mediaInfo.getMediaImageUrl()%>" alt="" style="width: 72; height : 72; max-height: 100%; max-width: 100%;" align="left"></td>
 		<td><a href="<%=mediaInfo.getMediaLinkUrl()%>">shared url</a></td>
 		<td><%=mediaInfo.getViewCount()%></td>
 		<td><%=mediaInfo.getDuration()%></td>
 		<td><%=mediaInfo.getPublishedDate()%></td>
 		<td><%=mediaInfo.getPublishedDate()%></td>
-		<td><button class=buttoninsert onClick="editMedia('<%=mediaInfo.getMediaId()%>','<%=mediaInfo.getCategoryId()%>')">Edit</button></td>
+		<td><button class=buttoninsert onClick="editMedia('<%=mediaInfo.getKeyString()%>','<%=categoryKeyString%>')">Edit</button></td>
 	</tr>
 	
-	<tr id="<%=mediaInfo.getMediaId()%>" style="background-color: #9370D8;" hidden>
+	<tr id="<%=mediaInfo.getKeyString()%>" style="background-color: #9370D8;" hidden>
 		<form action="<%=blobstoreService.createUploadUrl("/admin/upload")%>" method="post" enctype="multipart/form-data">
-			<input type="text" name="mediaKey" value="<%=mediaInfo.getMediaId()%>" hidden/>
+			<input type="text" name="mediaKey" value="<%=mediaInfo.getKeyString()%>" hidden/>
 			<input type="text" name="page" value="<%=mPage%>" style="display: none;"/>
 			<input type="text" name="duration" value="none" style="display: none;"/>
 			<td><textarea name="title" wrap="virtual"><%=mediaInfo.getTitle()%></textarea><br/><input type="file" name="mediaFile"></td>
 			<td><textarea name="content" rows="8" cols="48" wrap="virtual"><%=mediaInfo.getContentInfo()%></textarea></td>
 			<td><textarea name="speaker" wrap="virtual"><%=mediaInfo.getSpeaker()%></textarea></td>
 			<td><textarea name="author" wrap="virtual"><%=mediaInfo.getAuthor()%></textarea></td>
-			<td><select name="categoryId" id="select<%=mediaInfo.getMediaId()%>" value="<%=mediaInfo.getMediaId()%>"><%=dropDownList%><select></td>
+			<td><select name="categoryId" id="select<%=mediaInfo.getKeyString()%>" value="<%=categoryKeyString%>"><%=dropDownList%><select></td>
 			<td><img src="<%=mediaInfo.getMediaImageUrl()%>" alt="" style="width: 72; height : 72; max-height: 100%; max-width: 100%;" align="left"><br/><input type="file" name="imageFile"></td>
 			<td></td>
 			<td></td>
@@ -165,7 +167,7 @@ $(function(){
 			<td></td>
 			<td><input type="submit" value="done"></td>
 		</form>
-			<td><button onClick="cancelEditMedia('<%=mediaInfo.getMediaId()%>')">cancel</button></td>
+			<td><button onClick="cancelEditMedia('<%=mediaInfo.getKeyString()%>')">cancel</button></td>
 	</tr>
 
 <%

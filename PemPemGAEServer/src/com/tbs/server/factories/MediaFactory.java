@@ -5,8 +5,6 @@ import java.util.List;
 
 import org.slim3.datastore.Datastore;
 import org.slim3.datastore.ModelQuery;
-import org.slim3.datastore.ModelRef;
-import org.slim3.datastore.ModelRefAttributeMeta;
 
 import com.google.appengine.api.datastore.Key;
 import com.google.appengine.api.datastore.KeyFactory;
@@ -87,7 +85,6 @@ public class MediaFactory extends EntityFactory {
 		//set category
 		/*String categoryId = jsonData.getString(CategoryMeta.get().categoryId.getName());
 		Category category = CategoryFactory.getInstance().getCategoryById(categoryId);*/
-		media.getCategoryRef().setModel(category);
 
 		Key key = Datastore.put(media);
 
@@ -110,7 +107,7 @@ public class MediaFactory extends EntityFactory {
 			String author,
 			String imageBlobKey,
 			String mediaFileBlobKey,
-			String categoryId, String duration){
+			String categoryKey, String duration){
 
 
 		Media media = getMedia(mediaKey);
@@ -123,8 +120,16 @@ public class MediaFactory extends EntityFactory {
 		}
 		else if (mediaFileBlobKey!=null){
 			//insert
+			Category category = null;
+			if(Common.validateString(categoryKey)){
+				category = CategoryFactory.getInstance().getCategory(categoryKey);
+			}
+			else{
+				category = CategoryFactory.getInstance().createOtherCategory();
+			}
+
 			media = new Media();
-			Key ancestorKey = KeyFactory.createKey("Media", "Media");
+			Key ancestorKey = category.getKey();
 			Key childKey = Datastore.allocateId(ancestorKey, Media.class);
 			media.setKey(childKey);
 			media.setPublishedDate(now);
@@ -157,8 +162,6 @@ public class MediaFactory extends EntityFactory {
 		//check update category
 		//set category
 		//String categoryId = jsonRecipe.getString(CategoryMeta.get().categoryId.getName());
-		Category category = CategoryFactory.getInstance().getCategoryById(categoryId);
-		media.getCategoryRef().setModel(category);
 
 		Key key = Datastore.put(media);
 
@@ -192,21 +195,18 @@ public class MediaFactory extends EntityFactory {
 		Datastore.delete(categoryKey);
 	}
 
-	public List<Media> getMedia(int offset, int limit, MediaQueryMode mode, String categoryString) {
+	public List<Media> getMedia(int offset, int limit, MediaQueryMode mode, String categoryKeyString) {
 
 		switch (mode) {
 		case MEDIA_GET_ALL:
 			List<Media> lMedia = null;
 			ModelQuery<Media> mediaQuery = null;
-			if (categoryString!=null) {
-				MediaMeta  mm  =  new  MediaMeta (); 
-				ModelRefAttributeMeta<Media, ModelRef<Category>, Category> categoryRef = mm.categoryRef;
-				Key categoryStringKey = KeyFactory.stringToKey(categoryString);
-				mediaQuery =  Datastore.query(Media.class).filter(categoryRef.equal(categoryStringKey));
+			if (Common.validateString(categoryKeyString)) {
+				Key categoryKey = KeyFactory.stringToKey(categoryKeyString);
+				mediaQuery =  Datastore.query(Media.class,categoryKey);
 			}
 			else{
-				Key ancestorKey = KeyFactory.createKey("Media", "Media");
-				mediaQuery  = Datastore.query(Media.class,ancestorKey);
+				mediaQuery  = Datastore.query(Media.class);
 			}
 
 			mediaQuery.limit(limit);

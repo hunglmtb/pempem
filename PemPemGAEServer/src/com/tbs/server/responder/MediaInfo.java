@@ -1,12 +1,9 @@
 package com.tbs.server.responder;
 
-import org.slim3.datastore.ModelRef;
-
 import com.google.appengine.api.blobstore.BlobKey;
 import com.google.appengine.api.datastore.KeyFactory;
 import com.google.appengine.api.images.ImagesService;
 import com.google.appengine.api.images.ImagesServiceFactory;
-import com.tbs.server.model.Category;
 import com.tbs.server.model.Media;
 import com.tbs.server.util.Common;
 
@@ -74,17 +71,7 @@ public class MediaInfo {
 			
 			//key field
 			this.mMediaId = KeyFactory.keyToString(media.getKey());
-			 ModelRef<Category> cr = media.getCategoryRef();
 			 
-			if (cr!=null&&cr.getModel()!=null) {
-				this.mCategoryId = cr.getModel().getCategoryId();
-				this.mCategoryName = cr.getModel().getCategoryName();
-			}
-			else{
-				this.mCategoryId = "";
-				this.mCategoryName = "";
-			}
-
 			//core fields 
 			this.mTitle = media.getTitle();
 			this.mSpeaker = media.getSpeaker();

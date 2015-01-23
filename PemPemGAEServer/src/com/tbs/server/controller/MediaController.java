@@ -35,64 +35,62 @@ import com.tbs.server.util.Util;
 @RequestMapping("/media")
 public class MediaController {
 	private static final Logger _logger = Logger.getLogger(MediaController.class.getName());
-	private BlobstoreService blobstoreService = BlobstoreServiceFactory.getBlobstoreService();
 
 	//get api
 	//for admin : web client
 	@RequestMapping(value="/admin/all", params={"offset","limit"})
 	@ResponseBody
-	public RespondNotification getMediaList(
+	public List<Media> getMediaList(
 			@RequestParam("offset") int offset,
 			@RequestParam("limit") int limit) {
-
-		List<MediaInfo> ml = getAll(offset, limit);
-		RespondNotification respond = null;
-		if (ml!=null) {
-			respond = new RespondNotification(Util.RESPOND_SUCCESS_CODE, "ok", ml);							
-		}
-		else{
-			respond = new RespondNotification(Util.RESPOND_ERROR_CODE, "error when get media", null);							
-		}
-		return respond;
+		return  getAll(offset, limit);
 	}
 
 	//for client smart phone
 	@RequestMapping(value="/all", params={"offset","limit"})
 	@ResponseBody
-	public List<MediaInfo> getAll(
+	public List<Media> getAll(
 			@RequestParam("offset") int offset,
 			@RequestParam("limit") int limit) {
 
-		List<Media> mediaList = MediaFactory.getInstance().getMedia(offset,limit,Util.MediaQueryMode.MEDIA_GET_ALL,null);
-		if (mediaList!=null) {
-			List<MediaInfo> mediaInfoList = new ArrayList<MediaInfo>();
-			for (Media media : mediaList) {
-				mediaInfoList.add(new MediaInfo(media));
-			}
-			return mediaInfoList;
+		List<Media> mediaList = null;
+		List<Media> error = new ArrayList<>();
+		try {
+			mediaList = MediaFactory.getInstance().getMedia(offset,limit,Util.MediaQueryMode.MEDIA_GET_ALL,null);
+			return mediaList;
+
+		} catch (Exception e) {
+			e.printStackTrace();
+			Media category = new Media();
+			category.setErrorMessage(Common.stackTraceToString(e));
+			error.add(category);
 		}
 
-		return null;
+		return error;
 	}
 
 	//for client smart phone
 	@RequestMapping(value="/category",params={"category","offset","limit"})
 	@ResponseBody
-	public List<MediaInfo> getMediaByCategory(
+	public List<Media> getMediaByCategory(
 			@RequestParam("category") String categoryString,
 			@RequestParam("offset") int offset,
 			@RequestParam("limit") int limit) {
 
-		List<Media> mediaList = MediaFactory.getInstance().getMedia(offset,limit,Util.MediaQueryMode.MEDIA_GET_ALL,categoryString);
-		if (mediaList!=null) {
-			List<MediaInfo> mediaInfoList = new ArrayList<MediaInfo>();
-			for (Media media : mediaList) {
-				mediaInfoList.add(new MediaInfo(media));
-			}
-			return mediaInfoList;
+		List<Media> mediaList = null;
+		List<Media> error = new ArrayList<>();
+		try {
+			mediaList = MediaFactory.getInstance().getMedia(offset,limit,Util.MediaQueryMode.MEDIA_GET_ALL,categoryString);
+			return mediaList;
+
+		} catch (Exception e) {
+			e.printStackTrace();
+			Media category = new Media();
+			category.setErrorMessage(Common.stackTraceToString(e));
+			error.add(category);
 		}
 
-		return null;
+		return error;
 	}
 
 	@RequestMapping(value="/new", params={"offset","limit"})
@@ -148,7 +146,7 @@ public class MediaController {
 			try {
 				Media media = MediaFactory.getInstance().insertOrUpdateMedia(jsonDataString);
 				if (media!=null) {
-					List<MediaInfo> ml = getContiguousMedia(media);
+					List<Media> ml = getContiguousMedia(media);
 					return new RespondNotification(Util.RESPOND_SUCCESS_CODE, "ok", ml);							
 				}
 				else{
@@ -169,7 +167,7 @@ public class MediaController {
 
 		try {
 			MediaFactory.getInstance().deleteMedia(mediakeystring);
-			List<MediaInfo> ml = getAll(0, 10);
+			List<Media> ml = getAll(0, 10);
 			return new RespondNotification(Util.RESPOND_SUCCESS_CODE, "ok", ml);	
 
 		} catch (Exception e) {
@@ -179,7 +177,7 @@ public class MediaController {
 	}
 
 	//methods
-	private List<MediaInfo> getContiguousMedia(Media media) {
+	private List<Media> getContiguousMedia(Media media) {
 		//TODO UPDATE LATER, THIS IS ONLY FOR TEST
 		return getAll(0, 10);
 	}

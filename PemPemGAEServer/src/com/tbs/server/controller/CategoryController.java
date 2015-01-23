@@ -1,7 +1,7 @@
 package com.tbs.server.controller;
 
+import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Logger;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -10,19 +10,17 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.tbs.server.factories.CategoryFactory;
 import com.tbs.server.model.Category;
-import com.tbs.server.responder.CategoryInfo;
 import com.tbs.server.responder.RespondNotification;
+import com.tbs.server.util.Common;
 import com.tbs.server.util.Util;
 
 
 @Controller
 @RequestMapping("/category")
 public class CategoryController {
-	private static final Logger _logger = Logger.getLogger(CategoryController.class.getName());
-
 	@RequestMapping("/get")
 	@ResponseBody
-	public List<CategoryInfo> getCategories() {
+	public List<Category> getCategories() {
 		/*List<CategoryRow> categories = new ArrayList<CategoryRow>();
 		categories.add(new CategoryRow(CATEGORY_ID_HEADER, "YOU",false, null));
 		categories.add(new CategoryRow(CATEGORY_ID_HISTORY, "History", false, null));
@@ -38,94 +36,93 @@ public class CategoryController {
 		categories.add(new CategoryRow(CATEGORY_ID_NAME_04, "Quick & Snow Show", false, null));
 		categories.add(new CategoryRow(CATEGORY_ID_NAME_05, "Truyện ngắn kinh dị",  false, null));
 		categories.add(new CategoryRow(CATEGORY_ID_NAME_06, "Thơ quán",  false, null));
-		*/
-//		List<Category> categories = CategoryFactory.getInstance().getCategory();
-//		List<RepondCategory> rcs = CategoryFactory.getInstance().convertToRespond(categories);
+		 */
+		//		List<Category> categories = CategoryFactory.getInstance().getCategory();
+		//		List<RepondCategory> rcs = CategoryFactory.getInstance().convertToRespond(categories);
 		return CategoryFactory.getInstance().getCategories();
 	}
-	
+
 	//for admin web client
 	@RequestMapping("/admin/get")
 	@ResponseBody
-	public RespondNotification getAllCategories() {
-		
-		List<CategoryInfo> rcs = getCategories();
+	public List<Category> getAllCategories() {
+		List<Category> rcs = getCategories();
+		return rcs;
+	}
+
+	//for admin web client
+	@RequestMapping("/admin/getdropdown")
+	@ResponseBody
+	public RespondNotification getCategoryDropDown() {
+
+		List<Category> rcs = getCategories();
 		RespondNotification respond = null;
 		if (rcs!=null) {
-			respond = new RespondNotification(Util.RESPOND_SUCCESS_CODE, "OK", rcs);			
+			String dropDown = convertCategoriesToDropDownList(rcs);
+			respond = new RespondNotification(Util.RESPOND_SUCCESS_CODE, "OK", dropDown);			
 		}
 		else{
 			respond = new RespondNotification(Util.RESPOND_ERROR_CODE, "error when query data", null);			
 		}
 		return respond;
 	}
-	
-	//for admin web client
-		@RequestMapping("/admin/getdropdown")
-		@ResponseBody
-		public RespondNotification getCategoryDropDown() {
-			
-			List<CategoryInfo> rcs = getCategories();
-			RespondNotification respond = null;
-			if (rcs!=null) {
-				String dropDown = convertCategoriesToDropDownList(rcs);
-				respond = new RespondNotification(Util.RESPOND_SUCCESS_CODE, "OK", dropDown);			
-			}
-			else{
-				respond = new RespondNotification(Util.RESPOND_ERROR_CODE, "error when query data", null);			
-			}
-			return respond;
-		}
-	
-	
-	private String convertCategoriesToDropDownList(List<CategoryInfo> rcs) {
+
+
+	private String convertCategoriesToDropDownList(List<Category> rcs) {
 		String jDropDown = "{";
-		for (CategoryInfo repondCategory : rcs) {
-			jDropDown += "\""+repondCategory.getCategoryId()+"\":\""+repondCategory.getCategoryName()+"\",";
-			
+		for (Category repondCategory : rcs) {
+			jDropDown += "\""+repondCategory.getKeyString()+"\":\""+repondCategory.getCategoryName()+"\",";
+
 		}
 		jDropDown += "}";
 		return jDropDown;
 	}
 
-	
 
-	
+
+
 	@RequestMapping(value="/add", params={"categoryid","categoryname"})
 	@ResponseBody
-	public RespondNotification addCategory(
-			@RequestParam("categoryid") String categoryId,
-			@RequestParam("categoryname") String categoryName) {
-		
-		Category category;
-		
+	public List<Category> addCategory(@RequestParam("categoryname") String categoryName) {
+
+		Category category = null;
+		List<Category> error = new ArrayList<>();
 		try {
 			//String name = Util.getUtf8String(categoryName);
-			category = CategoryFactory.getInstance().insertOrUpdateCategory(categoryId,categoryName);
+			category = CategoryFactory.getInstance().insertOrUpdateCategory(categoryName);
 			if (category!=null) {
 				return getAllCategories();				
 			}
-			
+			else{
+				category = new Category();
+				category.setErrorMessage("result of insertOrUpdateCategory = null");
+			}
+
 		} catch (Exception e) {
-			_logger.warning(e.getMessage());
 			e.printStackTrace();
+			category.setErrorMessage(Common.stackTraceToString(e));
 		}
-		return new RespondNotification(Util.RESPOND_ERROR_CODE, "error when add data", null);		
+		error.add(category);
+		return error;		
 	}
-	
-	
-	
+
+
+
 	@RequestMapping(value="/delete", params={"categorykeystring"})
 	@ResponseBody
-	public RespondNotification deleteCategory(@RequestParam("categorykeystring") String categoryKeyString) {
-		
+	public List<Category> deleteCategory(@RequestParam("categorykeystring") String categoryKeyString) {
+		Category category = null;
+		List<Category> error = new ArrayList<>();
 		try {
 			CategoryFactory.getInstance().deleteCategory(categoryKeyString);
 			return getAllCategories();		
-			
+
 		} catch (Exception e) {
-			_logger.warning(e.getMessage());
+			e.printStackTrace();
+			category = new Category();
+			category.setErrorMessage(Common.stackTraceToString(e));
 		}
-		return new RespondNotification(Util.RESPOND_ERROR_CODE, "error when delete data", null);		
+		error.add(category);
+		return error;		
 	}
 }

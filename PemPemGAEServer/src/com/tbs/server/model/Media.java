@@ -2,22 +2,13 @@ package com.tbs.server.model;
 
 import java.util.Date;
 
-import org.slim3.datastore.Attribute;
-import org.slim3.datastore.InverseModelListRef;
 import org.slim3.datastore.Model;
-import org.slim3.datastore.ModelRef;
 
 import com.google.appengine.api.datastore.Key;
-import com.tbs.server.meta.HistoryMeta;
+import com.tbs.server.util.Common;
 
 @Model
-public class Media {
-	/////////////////// Attributes ///////////////////////////////
-	@Attribute(primaryKey = true)
-	private Key key;
-
-	/////////////////// Relationship ///////////////////////////////
-	private ModelRef<Category> categoryRef = new ModelRef<Category>(Category.class);
+public class Media extends JsonRespond{
 
 	/////////////////// fields ///////////////////////////////
 	//input fields
@@ -45,30 +36,6 @@ public class Media {
 	//for admin
 	private Date publishedDate;
 	private Date modifiedDate;
-
-	//unused fields
-	private String mediaId;
-
-	/////////////////// Attribute getters/setters //////////////////
-	public Key getKey() {
-		return key;
-	}
-
-	public void setKey(Key key) {
-		this.key = key;
-	}
-
-	public ModelRef<Category> getCategoryRef() {
-		return categoryRef;
-	}
-
-	public String getMediaId() {
-		return mediaId;
-	}
-
-	public void setMediaId(String mediaId) {
-		this.mediaId = mediaId;
-	}
 
 	public String getTitle() {
 		return title;
@@ -188,5 +155,15 @@ public class Media {
 
 	public void setModifiedDate(Date modifiedDate) {
 		this.modifiedDate = modifiedDate;
+	}
+	
+	public String getCategoryKeyString() {
+		Key key = getKey();
+		if (key!=null) {
+			Key categoryKey = getKey().getParent();
+			return Common.getKeyString(categoryKey);
+		}
+		
+		return "";
 	}
 }

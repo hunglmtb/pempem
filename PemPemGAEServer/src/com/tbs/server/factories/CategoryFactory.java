@@ -13,7 +13,6 @@ import com.google.appengine.api.datastore.Query.FilterOperator;
 import com.google.gwt.rpc.server.Pair;
 import com.tbs.server.meta.CategoryMeta;
 import com.tbs.server.model.Category;
-import com.tbs.server.model.Media;
 import com.tbs.server.responder.CategoryInfo;
 import com.tbs.server.util.Common;
 
@@ -28,14 +27,13 @@ public class CategoryFactory extends EntityFactory {
 		return instance;
 	}
 
-	public Category insertOrUpdateCategory(String categoryId, String categoryName){
+	public Category insertOrUpdateCategory(String categoryName){
 
-		if (categoryId==null||categoryId.length()<=0||categoryName==null||categoryName.length()<=0) {
+		if (!Common.validateString(categoryName)) {
 			return null;
 		}
 
-
-		Category category = getCategoryById(categoryId);
+		Category category = getCategoryByName(categoryName);
 		if(category != null){
 			category.setModifiedDate(new Date());
 		}
@@ -45,7 +43,6 @@ public class CategoryFactory extends EntityFactory {
 			Key childKey = Datastore.allocateId(ancestorKey, Category.class);
 			category.setKey(childKey);
 			category.setRegisteredDate(new Date());
-			category.setCategoryId(categoryId);
 		}
 
 		category.setCategoryName(categoryName);
@@ -58,10 +55,10 @@ public class CategoryFactory extends EntityFactory {
 		else return null;
 	}
 
-	public Category getCategoryById(String categoryId) {
-		if (Common.validateString(categoryId)) {
+	public Category getCategoryByName(String categoryName) {
+		if (Common.validateString(categoryName)) {
 			Category category = Datastore.query(Category.class)
-					.filter(CategoryMeta.get().categoryId.getName(), FilterOperator.EQUAL, categoryId)
+					.filter(CategoryMeta.get().categoryName.getName(), FilterOperator.EQUAL, categoryName)
 					.asSingle();
 			return category;
 		}
@@ -96,10 +93,9 @@ public class CategoryFactory extends EntityFactory {
 
 
 
-	public List<CategoryInfo> getCategories() {
-		List<Category> categories = CategoryFactory.getInstance().getCategory();
-		List<CategoryInfo> rcs = convertToRespond(categories);
-		return rcs;
+	public List<Category> getCategories() {
+		List<Category> categories = getCategory();
+		return categories;
 	}
 
 
@@ -119,10 +115,22 @@ public class CategoryFactory extends EntityFactory {
 		List<Category> categories = getCategory();
 		List<Pair<String, String>> ctl = new ArrayList<Pair<String, String>>();
 		for (Category category : categories) {
-			ctl.add(new Pair<String, String>(category.getCategoryId(), category.getCategoryName()));
+			ctl.add(new Pair<String, String>(category.getKeyString(), category.getCategoryName()));
 		}
 		return ctl ;
 	}
+	
+	public String getCategoryName(String categoryKeyString, List<Pair<String, String>> list){
+		if (list!=null&&Common.validateString(categoryKeyString)) {
+			for (Pair<String, String> pair : list) {
+				if(categoryKeyString.equals(pair.getA())){
+					return pair.getB();
+				}
+			}
+		}
+		return categoryKeyString;
+	}
+	
 
 	public Category getCategory(String categoryKey) {
 		if (Common.validateString(categoryKey)) {
@@ -135,7 +143,7 @@ public class CategoryFactory extends EntityFactory {
 
 	public Category createOtherCategory() {
 		// TODO Auto-generated method stub
-		return insertOrUpdateCategory("OTHER_CATEGORY", "Other");
+		return insertOrUpdateCategory("Other");
 	}
 }
 

@@ -24,9 +24,8 @@ import com.google.appengine.api.blobstore.BlobstoreServiceFactory;
 import com.google.appengine.api.images.ImagesService;
 import com.google.appengine.api.images.ImagesServiceFactory;
 import com.tbs.server.factories.MediaFactory;
+import com.tbs.server.model.Category;
 import com.tbs.server.model.Media;
-import com.tbs.server.responder.CategoryInfo;
-import com.tbs.server.responder.MediaInfo;
 import com.tbs.server.util.Util;
 import com.tbs.server.util.UtilView;
 @Controller
@@ -43,7 +42,7 @@ public class AdminController {
 	@ResponseBody
 	public ModelAndView showCategory() {
 		CategoryController cdc = new CategoryController();
-		List<CategoryInfo> categoryList = cdc.getCategories();
+		List<Category> categoryList = cdc.getCategories();
 		ModelAndView model = new ModelAndView("category-manager2"); 
 		model.addObject("categoryList",categoryList);
 		
@@ -59,7 +58,7 @@ public class AdminController {
 		MediaController mdc = new MediaController();
 		int page = aPage -1;
 		int offset = page<=0?0:page*sLimit;
-		List<MediaInfo> mediaList = mdc.getAll(offset,sLimit);
+		List<Media> mediaList = mdc.getAll(offset,sLimit);
 
 		ModelAndView model = new ModelAndView("media-manager"); 
 		model.addObject("mediaList",mediaList);

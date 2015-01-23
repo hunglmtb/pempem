@@ -7,6 +7,8 @@ import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
@@ -38,13 +40,22 @@ public class Common {
 	public static final int MEDIA_TYPE_VIDEO = 1;
 	public static final int MEDIA_TYPE_IMAGE = 2;
 	private static final String APP_DOMAIN = "langnghe.com";
-	
+
 	//key json
-	public static final String JSON_HISTORY_KEY = "historykey";
-	public static final String JSON_CATEGORY_KEY = "categorykey";
-	public static final String JSON_MEDIA_KEY = "mediakey";
-	public static final String JSON_USER_KEY = "userkey";
+	public static final String JSON_CATEGORY_KEY = "categoryKey";
+	public static final String JSON_MEDIA_KEY = "mediaKey";
+	public static final String JSON_USER_KEY = "userKey";
+	public static final String JSON_KEY_STRING = "keyString";
 	
+	//ERROR
+	/*private static final String ERROR_JSON_INVALID = "ERROR_JSON_INVALID";
+	private static final String ERROR_MACADDRESS_INVALID = "ERROR_MACADDRESS_INVALID";
+	private static final String ERROR_KEY_INVALID = "ERROR_KEY_INVALID";
+	private static final String ERROR_USER_NOT_FOUND = "ERROR_USER_NOT_FOUND";
+	private static final String ERROR_HISTORY_NOT_EXIST = "ERROR_HISTORY_NOT_EXIST";
+	*/
+	private static final String ERROR_CODE = "ERROR_CODE";
+
 	public static String[] mediaId;
 	public static List<String> mediaFileUrl;
 	public static List<String> mediaLinkUrl;
@@ -150,15 +161,45 @@ public class Common {
 		}
 		return null;
 	}
-	
+
 	public static String stackTraceToString(Throwable e) {
-	    StringBuilder sb = new StringBuilder();
-	    sb.append(e.getMessage()+"\n-------------------------\n");
-	    for (StackTraceElement element : e.getStackTrace()) {
-	        sb.append(element.toString());
-	        sb.append("\n");
-	    }
-	    return sb.toString();
+		StringBuilder sb = new StringBuilder();
+		sb.append(e.getMessage()+"\n-------------------------\n");
+		for (StackTraceElement element : e.getStackTrace()) {
+			sb.append(element.toString());
+			sb.append("\n");
+		}
+		return sb.toString();
 	}
 
+	public static boolean validateMacAddress(String macAddress) {
+		boolean validated = validateString(macAddress);
+		if (validated) {
+			Pattern p = Pattern.compile("^([0-9A-Fa-f]{2}[:-]){5}([0-9A-Fa-f]{2})$");
+			Matcher m = p.matcher(macAddress);
+			validated = m.find();
+		}
+		return validated;
+	}
+
+	public static String getErrorMessage(String keyString) {
+		
+		String message = null;
+		if (Common.validateString(keyString)) {
+			if (keyString.length()>=11) {
+				String[] codes = keyString.split(":");
+				if (codes.length>=1) {
+					if (ERROR_CODE.equals(codes[0])) {
+						if (codes.length>=2) {
+							message = codes[1];
+						}
+					}
+				}
+			}
+		}
+		else{
+			message = "not found entity";
+		}
+		return message;
+	}
 }

@@ -114,8 +114,22 @@ public class MediaFactory extends EntityFactory {
 
 		//insert or update
 		Date now = new Date();
+		boolean changeCategory = false;
 		if(media != null){
 			//update
+			//insert
+			if(Common.validateString(categoryKey)){
+				Category category = CategoryFactory.getInstance().getCategory(categoryKey);
+				
+				Key ancestorKey = category.getKey();
+				Key parentKey = media.getKey().getParent();
+				if (ancestorKey!=null&&ancestorKey.compareTo(parentKey)!=0) {
+					Key childKey = Datastore.allocateId(ancestorKey, Media.class);
+					media.setKey(childKey);
+					changeCategory = true;
+				}
+			}
+			
 			media.setModifiedDate(now);
 		}
 		else if (mediaFileBlobKey!=null){
@@ -164,8 +178,10 @@ public class MediaFactory extends EntityFactory {
 		//String categoryId = jsonRecipe.getString(CategoryMeta.get().categoryId.getName());
 
 		Key key = Datastore.put(media);
-
 		if (key!=null) {
+			if (changeCategory) {
+				deleteMedia(mediaKey);
+			}
 			String url = Common.initMediaLinkUrl(key);
 			if (url!=null&&url.length()>0) {
 				media.setMediaLinkUrl(url);
@@ -190,7 +206,7 @@ public class MediaFactory extends EntityFactory {
 		return null;
 	}
 
-	public void deleteMedia(String mediakeystring) throws Exception{
+	public void deleteMedia(String mediakeystring){
 		Key categoryKey = KeyFactory.stringToKey(mediakeystring);			
 		Datastore.delete(categoryKey);
 	}

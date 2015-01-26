@@ -117,15 +117,15 @@ $(function(){
 		<tr>
 			<th style="width: 10%">Media Title</th>
 			<th style="width: 25%">Nội dung</th>
-			<th style="width: 4%">Speaker</th>
-			<th style="width: 5%">Author</th>
+			<th style="width: 3%">Speaker</th>
+			<th style="width: 3%">Author</th>
 			<th style="width: 10%">Category</th>
-			<th style="width: 15%">Image</th>
-			<th style="width: 8%">shared Link</th>
-			<th style="width: 5%">view count</th>
-			<th style="width: 5%">duration</th>
-			<th style="width: 5%">published date</th>
-			<th style="width: 5%">modified date</th>
+			<th style="width: 25%">Image</th>
+			<th style="width: 3%">shared Link</th>
+			<th style="width: 3%">view count</th>
+			<th style="width: 3%">duration</th>
+			<th style="width: 3%">published date</th>
+			<th style="width: 3%">modified date</th>
 		</tr>
 	</thead>
   
@@ -140,7 +140,7 @@ $(function(){
 		<td><%=mediaInfo.getSpeaker()%></td>
 		<td><%=mediaInfo.getAuthor()%></td>
 		<td><%= categoryFactory.getCategoryName(mediaInfo.getCategoryKeyString(),list) %></td>
-		<td><img src="<%=mediaInfo.getMediaImageUrl()%>" alt="" style="width: 72; height : 72; max-height: 100%; max-width: 100%;" align="left"></td>
+		<td><img src="/media/image?imagekey=<%=mediaInfo.getMediaImageUrl()%>" alt="" style="width: 72; height : 72; max-height: 100%; max-width: 100%;" align="left"></td>
 		<td><a href="<%=mediaInfo.getMediaLinkUrl()%>">shared url</a></td>
 		<td><%=mediaInfo.getViewCount()%></td>
 		<td><%=mediaInfo.getDuration()%></td>
@@ -159,7 +159,7 @@ $(function(){
 			<td><textarea name="speaker" wrap="virtual"><%=mediaInfo.getSpeaker()%></textarea></td>
 			<td><textarea name="author" wrap="virtual"><%=mediaInfo.getAuthor()%></textarea></td>
 			<td><select name="categoryId" id="select<%=mediaInfo.getKeyString()%>" value="<%=categoryKeyString%>"><%=dropDownList%><select></td>
-			<td><img src="<%=mediaInfo.getMediaImageUrl()%>" alt="" style="width: 72; height : 72; max-height: 100%; max-width: 100%;" align="left"><br/><input type="file" name="imageFile"></td>
+			<td><img src="/media/image?imagekey=<%=mediaInfo.getMediaImageUrl()%>" alt="" style="width: 72; height : 72; max-height: 100%; max-width: 100%;" align="left"><br/><input type="file" name="imageFile"></td>
 			<td></td>
 			<td></td>
 			<td></td>
@@ -194,12 +194,6 @@ $(function(){
 		</form>
 	</tr>	
 </table>
-
-<!-- End .module-table-body -->
 </div>
-
-
-<!-- End .module -->
-
 </body>
 </html>

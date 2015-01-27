@@ -3,8 +3,11 @@ package com.tbs.server.controller;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.servlet.http.HttpServletRequest;
+
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
@@ -81,21 +84,23 @@ public class CategoryController {
 
 
 
-	@RequestMapping(value="/add", params={"categoryid","categoryname"})
+	@RequestMapping(value="/add",method = RequestMethod.POST)
 	@ResponseBody
-	public List<Category> addCategory(@RequestParam("categoryname") String categoryName) {
+	public List<Category> addCategory(HttpServletRequest req) {
 
+		String categoryName =  Util.getUtf8String(req.getParameter("categoryName"));
+		String categoryKeyString = Util.getUtf8String(req.getParameter("keyString"));
 		Category category = null;
 		List<Category> error = new ArrayList<>();
 		try {
 			//String name = Util.getUtf8String(categoryName);
-			category = CategoryFactory.getInstance().insertOrUpdateCategory(categoryName);
+			category = CategoryFactory.getInstance().insertOrUpdateCategory(categoryName,categoryKeyString);
 			if (category!=null) {
 				return getAllCategories();				
 			}
 			else{
 				category = new Category();
-				category.setErrorMessage("result of insertOrUpdateCategory = null");
+				category.setErrorMessage("failt");
 			}
 
 		} catch (Exception e) {
@@ -105,8 +110,7 @@ public class CategoryController {
 		error.add(category);
 		return error;		
 	}
-
-
+	
 
 	@RequestMapping(value="/delete", params={"categorykeystring"})
 	@ResponseBody

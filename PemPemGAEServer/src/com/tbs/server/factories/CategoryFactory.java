@@ -27,24 +27,29 @@ public class CategoryFactory extends EntityFactory {
 		return instance;
 	}
 
-	public Category insertOrUpdateCategory(String categoryName){
+	public Category insertOrUpdateCategory(String categoryName, String categoryKeyString){
 
 		if (!Common.validateString(categoryName)) {
 			return null;
 		}
-
-		Category category = getCategoryByName(categoryName);
-		if(category != null){
-			category.setModifiedDate(new Date());
+		
+		Category category = null;
+		if (Common.validateString(categoryKeyString)) {
+			category = getCategory(categoryKeyString);
 		}
-		else{
+		else if (getCategoryByName(categoryName)==null) {
 			category = new Category();
 			Key ancestorKey = KeyFactory.createKey("Category", "Category");
 			Key childKey = Datastore.allocateId(ancestorKey, Category.class);
 			category.setKey(childKey);
 			category.setRegisteredDate(new Date());
 		}
+		
+		if (category==null) {
+			return null;
+		}
 
+		category.setModifiedDate(new Date());
 		category.setCategoryName(categoryName);
 
 		Key key = Datastore.put(category);
@@ -143,7 +148,7 @@ public class CategoryFactory extends EntityFactory {
 
 	public Category createOtherCategory() {
 		// TODO Auto-generated method stub
-		return insertOrUpdateCategory("Other");
+		return insertOrUpdateCategory("Other",null);
 	}
 }
 

@@ -276,18 +276,24 @@ public class Util {
 	}
 
 	public static String getUtf8String(String content) {
+		
 		Value runtime = SystemProperty.environment.value();
 		String name = runtime.name();
 		if (name.equals("Production")) return content;
-		
+		else{
+			return content;
+		}
+		/*
 		String result = content;
 		try {
-			byte[] bytes;
-			bytes = content.getBytes("ISO-8859-1");
-			result = new String(bytes,"UTF-8");
+			if (Common.validateString(content)) {
+				byte[] bytes;
+				bytes = content.getBytes("ISO-8859-1");
+				result = new String(bytes,"UTF-8");
+			}
 		} catch (UnsupportedEncodingException e) {
 			e.printStackTrace();
 		}
-		return result ;
+		return result ;*/
 	}
 }

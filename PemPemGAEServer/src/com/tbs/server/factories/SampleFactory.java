@@ -8,20 +8,7 @@ import org.slim3.datastore.ModelQuery;
 
 import com.google.appengine.api.datastore.Key;
 import com.google.appengine.api.datastore.KeyFactory;
-import com.google.appengine.datanucleus.query.DatastoreQuery.NowProvider;
-import com.google.appengine.labs.repackaged.org.json.JSONException;
-import com.google.appengine.labs.repackaged.org.json.JSONObject;
-import com.tbs.server.meta.HistoryMeta;
-import com.tbs.server.meta.MediaMeta;
-import com.tbs.server.meta.UserMeta;
-import com.tbs.server.model.Category;
-import com.tbs.server.model.History;
-import com.tbs.server.model.Media;
 import com.tbs.server.model.Sample;
-import com.tbs.server.model.User;
-import com.tbs.server.responder.HistoryInfo;
-import com.tbs.server.util.Common;
-import com.tbs.server.util.Util;
 
 public class SampleFactory extends EntityFactory {
 

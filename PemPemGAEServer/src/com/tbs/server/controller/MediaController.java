@@ -163,7 +163,7 @@ public class MediaController {
 
 	@RequestMapping(value="/delete", params={"mediakeystring"})
 	@ResponseBody
-	public RespondNotification deleteCategory(@RequestParam("mediakeystring") String mediakeystring) {
+	public RespondNotification deleteMedia(@RequestParam("mediakeystring") String mediakeystring) {
 
 		try {
 			MediaFactory.getInstance().deleteMedia(mediakeystring);

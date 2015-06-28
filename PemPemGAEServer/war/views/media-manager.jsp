@@ -116,12 +116,12 @@ $(function(){
     <thead>
 		<tr>
 			<th style="width: 10%">Media Title</th>
-			<th style="width: 25%">Nội dung</th>
+			<th style="width: 20%%">Nội dung</th>
 			<th style="width: 3%">Speaker</th>
 			<th style="width: 3%">Author</th>
 			<th style="width: 10%">Category</th>
 			<th style="width: 25%">Image</th>
-			<th style="width: 3%">shared Link</th>
+			<th style="width: 8%%">shared Link</th>
 			<th style="width: 3%">view count</th>
 			<th style="width: 3%">duration</th>
 			<th style="width: 3%">published date</th>
@@ -135,7 +135,7 @@ $(function(){
 		String categoryKeyString = mediaInfo.getCategoryKeyString();
   %>
 	<tr id="view<%=mediaInfo.getKeyString() %>">
-		<td><a href="/media/action?key=<%=mediaInfo.getMediaFileUrl()%>"><%=mediaInfo.getTitle()%></a></td>
+		<td><a href="/media/action?key=<%=mediaInfo.getMediaFileUrl()%>">play <%=mediaInfo.getTitle()%></a></td>
 		<td><%=mediaInfo.getContentInfo()%></td>
 		<td><%=mediaInfo.getSpeaker()%></td>
 		<td><%=mediaInfo.getAuthor()%></td>
@@ -147,6 +147,7 @@ $(function(){
 		<td><%=mediaInfo.getPublishedDate()%></td>
 		<td><%=mediaInfo.getPublishedDate()%></td>
 		<td><button class=buttoninsert onClick="editMedia('<%=mediaInfo.getKeyString()%>','<%=categoryKeyString%>')">Edit</button></td>
+		<td><a href="/media/delete?mediakeystring=<%=mediaInfo.getKeyString()%>" onclick="return confirm('Xóa media đấy');">Delete</a></td>
 	</tr>
 	
 	<tr id="<%=mediaInfo.getKeyString()%>" style="background-color: #9370D8;" hidden>
@@ -155,7 +156,7 @@ $(function(){
 			<input type="text" name="page" value="<%=mPage%>" style="display: none;"/>
 			<input type="text" name="duration" value="none" style="display: none;"/>
 			<td><textarea name="title" wrap="virtual"><%=mediaInfo.getTitle()%></textarea><br/><input type="file" name="mediaFile"></td>
-			<td><textarea name="content" rows="8" cols="48" wrap="virtual"><%=mediaInfo.getContentInfo()%></textarea></td>
+			<td><textarea name="content" rows="8" cols="35" wrap="virtual"><%=mediaInfo.getContentInfo()%></textarea></td>
 			<td><textarea name="speaker" wrap="virtual"><%=mediaInfo.getSpeaker()%></textarea></td>
 			<td><textarea name="author" wrap="virtual"><%=mediaInfo.getAuthor()%></textarea></td>
 			<td><select name="categoryId" id="select<%=mediaInfo.getKeyString()%>" value="<%=categoryKeyString%>"><%=dropDownList%><select></td>
@@ -183,12 +184,13 @@ $(function(){
 			
 		<input type="text" name="page" value="<%=mPage%>" style="display: none;"/>
 		<input type="text" name="duration" value="none" style="display: none;"/>
-		<td><textarea name="title" wrap="virtual"></textarea><br/><input type="file" name="mediaFile"></td>
+		<td><textarea name="title" wrap="virtual"></textarea></td>
 		<td><textarea name="content" rows="6" cols="45" wrap="virtual"></textarea></td>
 		<td><textarea name="speaker" wrap="virtual"></textarea></td>
 		<td><textarea name="author" wrap="virtual"></textarea></td>
 		<td><select name="categoryId" id="categorydropdown"></select></td>
 		<td><input type="file" name="imageFile"></td>
+		<td><input type="file" name="mediaFile"></td>
 		<td></td>
 		<td><input type="submit" value="add"></td>
 		</form>

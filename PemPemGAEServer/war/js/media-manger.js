@@ -203,6 +203,11 @@ function editMedia(mediaId,selected) {
 	document.getElementById("select"+mediaId).value = selected;
 	
 }
+
+function deleteMedia(mediaId) {
+	//alert("mediaId: "+mediaId);
+}
+
 function cancelEditMedia(mediaId) {
 	//alert("mediaId: "+mediaId);
 	document.getElementById(mediaId).style.display  = 'none';

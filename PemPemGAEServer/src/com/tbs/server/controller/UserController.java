@@ -27,8 +27,23 @@ public class UserController {
 		UserFactory userFactory = UserFactory.getInstance();
 		List<User> users = userFactory.getUsers();
 		if (users==null||users.size()<=0) {
-			for (int i = 0; i < 10; i++) {
-				userFactory.registerUser("macadress"+i, "kaka "+i);			
+			
+			String [] macaddress = new String[]{"00:09:5B:EC:EE:F1",
+												"00:09:5B:EC:EE:F2",
+												"00:09:5B:EC:EE:F3",
+												"00:09:5B:EC:EE:F4",
+												"00:09:5B:EC:EE:F5",
+												"00:09:5B:EC:EE:F6",
+												"00:09:5B:EC:EE:F7",
+												"00:09:5B:EC:EE:F8",
+												"00:09:5B:EC:EE:F9",
+												"00:09:5B:EC:EE:FA",
+												"00:09:5B:EC:EE:FB",
+												"00:09:5B:EC:EE:FC",
+												"00:09:5B:EC:EE:FD",
+												"00:09:5B:EC:EE:FE"};
+			for (int i = 0; i < macaddress.length; i++) {
+				userFactory.registerUser(macaddress[i], "kaka "+i);			
 			}
 			users = userFactory.getUsers();
 		}
